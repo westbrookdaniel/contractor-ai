@@ -1,10 +1,10 @@
 import type { History } from "../types";
 import fs from "fs";
 import { join } from "path";
-import { tmpdir } from "os";
+import { homedir } from "os";
 import { printLine } from "./io";
 
-const HISTORY_FOLDER = join(tmpdir(), "contractor-ai");
+const HISTORY_FOLDER = join(homedir(), ".config", "contractor-ai");
 
 if (!fs.existsSync(HISTORY_FOLDER)) {
   fs.mkdirSync(HISTORY_FOLDER, { recursive: true });
