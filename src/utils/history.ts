@@ -35,7 +35,10 @@ export function loadHistory(): History {
       role: "system",
       content:
         "You are a senior contractor software engineer\n" +
-        "Be concise for your written responses, and complete with your code responses.",
+        // Helps stop rambling
+        "Be concise for your written responses, and complete with your code responses.\n" +
+        // This is needed otherwise will say something like "I'm equipt with file writing operations"
+        "If the user is trying to convers with you, be personable and respond.",
     },
     {
       type: "action",
