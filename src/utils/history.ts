@@ -1,13 +1,13 @@
 import type { History } from "../types";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import fs from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import { printLine } from "./io";
 
 const HISTORY_FOLDER = join(tmpdir(), "contractor-ai");
 
-if (!existsSync(HISTORY_FOLDER)) {
-  mkdirSync(HISTORY_FOLDER, { recursive: true });
+if (!fs.existsSync(HISTORY_FOLDER)) {
+  fs.mkdirSync(HISTORY_FOLDER, { recursive: true });
 }
 
 const HISTORY_CACHE_FILE = join(
@@ -16,9 +16,13 @@ const HISTORY_CACHE_FILE = join(
 );
 
 export function loadHistory(): History {
-  if (existsSync(HISTORY_CACHE_FILE)) {
+  if (process.env.CLEAR_CACHE) {
+    fs.rmSync(HISTORY_CACHE_FILE);
+  }
+
+  if (fs.existsSync(HISTORY_CACHE_FILE)) {
     try {
-      const data = readFileSync(HISTORY_CACHE_FILE, "utf8");
+      const data = fs.readFileSync(HISTORY_CACHE_FILE, "utf8");
       printLine(`Loaded history from cache`);
       return JSON.parse(data);
     } catch (error) {
@@ -49,7 +53,11 @@ export function loadHistory(): History {
 
 export function saveHistory(history: History): void {
   try {
-    writeFileSync(HISTORY_CACHE_FILE, JSON.stringify(history, null, 2), "utf8");
+    fs.writeFileSync(
+      HISTORY_CACHE_FILE,
+      JSON.stringify(history, null, 2),
+      "utf8",
+    );
   } catch (error) {
     console.error("Error saving history cache:", error);
   }
