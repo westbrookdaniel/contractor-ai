@@ -2,11 +2,14 @@ import { clearConsole, printDivider, printLine } from "./utils/io";
 import { execSync } from "child_process";
 import { prompt } from "./utils/actions/prompt";
 import { determineAction } from "./utils/conversation";
-import type { History } from "./types";
+import type { History, Action } from "./types";
 import { respond } from "./utils/actions/respond";
 import { askForRelevantFiles } from "./utils/actions/askForRelevantFiles";
 import { loadHistory, saveHistory } from "./utils/history";
 import { edit } from "./utils/actions/edit";
+
+// dont want to include 'prompt', its not great at that
+const AVAILABLE_ACTIONS: Action[] = ["respond", "edit", "askForRelevantFiles"];
 
 async function main(): Promise<void> {
   clearConsole();
@@ -25,7 +28,7 @@ async function main(): Promise<void> {
   });
 
   while (true) {
-    const action = await determineAction(history);
+    const action = await determineAction(history, AVAILABLE_ACTIONS);
 
     switch (action) {
       case "prompt":
@@ -63,3 +66,4 @@ main().catch((error) => {
   console.error("An error occurred:", error);
   process.exit(1);
 });
+

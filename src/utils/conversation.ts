@@ -4,17 +4,25 @@ import { clearLines, Color, printLine } from "./io";
 import { heavyModel } from "./model";
 import { z } from "zod";
 
-export async function determineAction(history: History): Promise<Action> {
+export async function determineAction(
+  history: History,
+  allowedActions: Action[],
+): Promise<Action> {
   const last = history[history.length - 1];
   if (last.type === "action") {
     return last.action;
   }
+
+  // If ai just sent a message force the next to be prompt,
+  // ai isn't great at picking when to ask for a prompt
   if (last.type === "message" && last.role === "assistant") {
     history.push({ type: "action", action: "prompt" });
     return "prompt";
   }
 
   printLine("\n* Determining Action...", Color.Gray);
+
+  const actionSchema = z.enum(allowedActions as [Action, ...Action[]]);
 
   const response = await generateObject({
     model: heavyModel,
@@ -24,10 +32,10 @@ export async function determineAction(history: History): Promise<Action> {
         content:
           "Analyze the last message in the conversation and determine the next action.\n" +
           "\n" +
-          "Actions:\n" +
-          "2. 'respond': Provide assistance, converse, and request more context\n" +
-          "2. 'edit': Edit or create files if the request is clear and actionable\n" +
-          "4. 'askForRelevantFiles': Request the user to select relevant files\n" +
+          "Available Actions:\n" +
+          allowedActions
+            .map((action, i) => `${i + 1}. '${action}'\n`)
+            .join("") +
           "\n" +
           "Rules:\n" +
           "- Return single action without commentary\n" +
@@ -37,12 +45,11 @@ export async function determineAction(history: History): Promise<Action> {
       },
       {
         role: "user",
-        // TODO should this be a subset? improve system prompt?
         content: historyToData(history),
       },
     ],
     schema: z.object({
-      action: z.enum(["respond", "edit", "askForRelevantFiles"]),
+      action: actionSchema,
     }),
   });
 
@@ -77,3 +84,4 @@ export function historyToMessages(
 
   return filtered.map((m) => ({ role: m.role, content: m.content }));
 }
+

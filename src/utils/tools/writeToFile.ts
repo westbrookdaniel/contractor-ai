@@ -2,6 +2,7 @@ import { tool } from "ai";
 import fs from "fs";
 import path from "path";
 import { z } from "zod";
+import { GIT_ROOT } from "../files";
 
 export const writeToFile = tool({
   description: "Write text content to a file",
@@ -26,7 +27,7 @@ export const writeToFile = tool({
       await fs.promises.writeFile(fileName, content, { flag: "w" });
       return {
         success: true,
-        message: `+${fileName}`,
+        message: `+${path.resolve(GIT_ROOT, fileName)}`,
       };
     } catch (error: any) {
       return {
