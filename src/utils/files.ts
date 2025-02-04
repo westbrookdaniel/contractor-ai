@@ -50,11 +50,15 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
     items: Awaited<ReturnType<typeof listFiles>>,
     first?: boolean,
   ) {
-    const visibleItems = items.slice(offset, offset + maxLines - 2);
+    const maxVisibleItems = maxLines - 2; // Account for the two info lines
+    const visibleItems = items.slice(offset, offset + maxVisibleItems);
 
     if (!first) {
       clearLines(maxLines);
     }
+
+    // Move cursor to top of the list area
+    readline.cursorTo(process.stdout, 0);
 
     // Render visible items
     visibleItems.forEach((item, i) => {
@@ -68,16 +72,17 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
           : "[ ]";
       const suffix = item.isDirectory() ? "/" : "";
 
-      process.stdout.write(
+      printLine(
         `${prefix} ${select} ${item.name}${suffix}${Color.Reset}`,
       );
-      readline.moveCursor(process.stdout, 0, 1);
-      readline.cursorTo(process.stdout, 0);
     });
 
-    // Render current path
-    readline.moveCursor(process.stdout, 0, maxLines - visibleItems.length - 2);
-    readline.cursorTo(process.stdout, 0);
+    // Fill remaining lines with empty space if needed
+    for (let i = visibleItems.length; i < maxVisibleItems; i++) {
+      printLine("");
+    }
+
+    // Render info lines at the bottom
     printLine(
       `Arrow keys to navigate, [space] to select, [enter] to submit`,
       Color.Gray,
@@ -121,7 +126,9 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
           case "\u001b[A": // Up arrow
             if (cursor > 0) {
               cursor--;
-              if (cursor < offset) offset = cursor;
+              if (cursor < offset) {
+                offset = cursor;
+              }
               renderList(items);
             }
             break;
@@ -129,7 +136,9 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
           case "\u001b[B": // Down arrow
             if (cursor < items.length - 1) {
               cursor++;
-              if (cursor >= offset + maxLines) offset = cursor - maxLines + 1;
+              if (cursor >= offset + (maxLines - 2)) {
+                offset = cursor - (maxLines - 3);
+              }
               renderList(items);
             }
             break;

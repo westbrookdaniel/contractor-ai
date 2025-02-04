@@ -15,7 +15,8 @@ export async function edit(history: History) {
         role: "system",
         content:
           "You are a senior contractor software engineer\n" +
-          "Be concise for your written responses, and complete with your code responses.",
+          "Be concise for your written responses, and complete with your code responses.\n" +
+          "Don't tell me what the changes were, I can look in the files you write in to see that.",
       },
       ...historyToMessages(history),
     ],
