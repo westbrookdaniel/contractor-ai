@@ -29,8 +29,9 @@ export async function edit(history: History) {
   const response = await result.text;
 
   if (response.trim() === "") {
-    // we need to throw otherise we can infinite loop very easily
-    throw new Error("Failed to respond");
+    // we need to exit otherise we can infinite loop very easily
+    printLine("Failed to respond", Color.Red);
+    process.exit(1);
   }
 
   printLine();
