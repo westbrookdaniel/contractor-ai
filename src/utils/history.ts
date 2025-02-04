@@ -19,7 +19,7 @@ export function loadHistory(): History {
   if (existsSync(HISTORY_CACHE_FILE)) {
     try {
       const data = readFileSync(HISTORY_CACHE_FILE, "utf8");
-      printLine(`Loaded history from cache`);
+      printLine(`Loaded history from ${HISTORY_CACHE_FILE}`);
       return JSON.parse(data);
     } catch (error) {
       console.error("Error loading history cache:", error);
