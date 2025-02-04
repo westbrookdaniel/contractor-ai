@@ -6,6 +6,7 @@ import type { History } from "./types";
 import { respond } from "./utils/actions/respond";
 import { askForRelevantFiles } from "./utils/actions/askForRelevantFiles";
 import { loadHistory, saveHistory } from "./utils/history";
+import { edit } from "./utils/actions/edit";
 
 async function main(): Promise<void> {
   clearConsole();
@@ -33,6 +34,9 @@ async function main(): Promise<void> {
       case "respond":
         await respond(history);
         break;
+      case "edit":
+        await edit(history);
+        break;
       case "askForRelevantFiles":
         await askForRelevantFiles(history);
         break;
@@ -59,4 +63,3 @@ main().catch((error) => {
   console.error("An error occurred:", error);
   process.exit(1);
 });
-

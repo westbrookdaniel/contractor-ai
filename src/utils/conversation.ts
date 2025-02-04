@@ -25,7 +25,8 @@ export async function determineAction(history: History): Promise<Action> {
           "Analyze the last message in the conversation and determine the next action.\n" +
           "\n" +
           "Actions:\n" +
-          "2. 'respond': Provide assistance if request is clear and actionable\n" +
+          "2. 'respond': Provide assistance, converse, and request more context\n" +
+          "2. 'edit': Edit or create files if the request is clear and actionable\n" +
           "4. 'askForRelevantFiles': Request the user to select relevant files\n" +
           "\n" +
           "Rules:\n" +
@@ -41,7 +42,7 @@ export async function determineAction(history: History): Promise<Action> {
       },
     ],
     schema: z.object({
-      action: z.enum(["respond", "askForRelevantFiles"]),
+      action: z.enum(["respond", "edit", "askForRelevantFiles"]),
     }),
   });
 

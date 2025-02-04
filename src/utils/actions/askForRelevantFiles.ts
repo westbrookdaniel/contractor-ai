@@ -26,7 +26,8 @@ export async function askForRelevantFiles(history: History) {
     },
     {
       type: "action",
-      action: "respond",
+      // TODO should this pick between edit and prompt?
+      action: "edit",
     },
   );
 }

@@ -11,4 +11,4 @@ export type ActionHistory = {
 
 export type History = (MessageHistory | ActionHistory)[];
 
-export type Action = "prompt" | "respond" | "askForRelevantFiles";
+export type Action = "prompt" | "edit" | "respond" | "askForRelevantFiles";
