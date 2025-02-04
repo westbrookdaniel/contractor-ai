@@ -6,6 +6,6 @@ import { Color, printLine } from "../io";
 export function clear(history: History) {
   fs.rmSync(HISTORY_CACHE_FILE);
   history.length = 0;
-  printLine("Cleared History", Color.Gray);
   printLine();
+  printLine("Cleared History", Color.Gray);
 }

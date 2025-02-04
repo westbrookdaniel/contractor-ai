@@ -16,6 +16,13 @@ export async function determineAction(
   allowedActions: Action[],
 ): Promise<Action | ManualAction> {
   const last = history[history.length - 1];
+
+  // This is probably because we just cleared the history
+  if (!last) {
+    history.push({ type: "action", action: "prompt" });
+    return "prompt";
+  }
+
   if (last.type === "action") {
     return last.action;
   }

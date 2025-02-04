@@ -7,6 +7,7 @@ import { respond } from "./utils/actions/respond";
 import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/history";
 import { edit } from "./utils/actions/edit";
+import { clear } from "./utils/actions/clear";
 
 // all actions ai can determine to run automatically
 // dont want to include 'prompt', its not great at that
@@ -42,7 +43,7 @@ async function main(): Promise<void> {
         await edit(history);
         break;
       case "clear":
-        await edit(history);
+        clear(history);
         break;
       case "addFiles":
         await addFiles(history);
@@ -54,15 +55,17 @@ async function main(): Promise<void> {
 }
 
 // check we don't have a dirty git before starting
-try {
-  const gitDiff = execSync("git diff", { encoding: "utf-8" });
-  if (gitDiff.length > 0) {
-    console.error("Commit or stash your changes before proceeding.");
+if (!process.env.FORCE_DIRTY) {
+  try {
+    const gitDiff = execSync("git diff", { encoding: "utf-8" });
+    if (gitDiff.length > 0) {
+      console.error("Commit or stash your changes before proceeding.");
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error("Error checking git diff:", error);
     process.exit(1);
   }
-} catch (error) {
-  console.error("Error checking git diff:", error);
-  process.exit(1);
 }
 
 // run the cli
