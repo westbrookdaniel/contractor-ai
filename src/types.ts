@@ -1,6 +1,6 @@
 export type MessageHistory = {
   type: "message";
-  role: "system" | "user" | "assistant" | "data";
+  role: "user" | "assistant" | "data";
   content: string;
 };
 

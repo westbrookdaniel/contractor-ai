@@ -85,19 +85,10 @@ export function historyToData(history: History) {
   return JSON.stringify(history.slice(-MAX_DATA));
 }
 
-export function historyToMessages(
-  history: History,
-  opts?: { withoutSystem?: boolean },
-) {
-  const withoutSystem = opts?.withoutSystem ?? false;
-
+export function historyToMessages(history: History) {
   const filtered = history
     .slice(-MAX_MESSAGES)
-    .filter((h) =>
-      withoutSystem
-        ? h.type === "message"
-        : h.type === "message" && h.role !== "system",
-    ) as MessageHistory[];
+    .filter((h) => h.type === "message") as MessageHistory[];
 
   return filtered.map((m) => ({ role: m.role, content: m.content }));
 }

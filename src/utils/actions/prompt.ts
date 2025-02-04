@@ -6,7 +6,6 @@ const actionHelp: Record<Action | ManualAction, string> = {
   clear: "Clear chat history and cache",
   prompt: "Request a prompt from the user",
   addFiles: "File selector to add file contents to history",
-  // TODO system prompt per ai
   edit: "AI with the capability to edit and create files",
   respond: "AI designed to provide help and converse",
 };

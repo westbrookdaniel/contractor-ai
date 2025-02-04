@@ -10,7 +10,15 @@ export async function edit(history: History) {
 
   const result = streamText({
     model: heavyModel,
-    messages: historyToMessages(history),
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a senior contractor software engineer\n" +
+          "Be concise for your written responses, and complete with your code responses.",
+      },
+      ...historyToMessages(history),
+    ],
     tools: { writeToFile },
     maxSteps: 5, // max 5 actions
   });

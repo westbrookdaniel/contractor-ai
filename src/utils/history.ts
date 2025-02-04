@@ -16,10 +16,6 @@ export const HISTORY_CACHE_FILE = join(
 );
 
 export function loadHistory(): History {
-  if (process.env.CLEAR_CACHE) {
-    fs.rmSync(HISTORY_CACHE_FILE);
-  }
-
   if (fs.existsSync(HISTORY_CACHE_FILE)) {
     try {
       const data = fs.readFileSync(HISTORY_CACHE_FILE, "utf8");
@@ -32,21 +28,8 @@ export function loadHistory(): History {
       console.error("Error loading history cache:", error);
     }
   }
-
   printLine("Hello. How can I help?");
-
-  // Return default history if no cache exists or on error
   return [
-    {
-      type: "message",
-      role: "system",
-      content:
-        "You are a senior contractor software engineer\n" +
-        // Helps stop rambling
-        "Be concise for your written responses, and complete with your code responses.\n" +
-        // This is needed otherwise will say something like "I'm equipt with file writing operations"
-        "If the user is trying to convers with you, be personable and respond.",
-    },
     {
       type: "action",
       action: "prompt",
