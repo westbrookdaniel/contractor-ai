@@ -1,5 +1,6 @@
 import type { Action, History, ManualAction } from "../../types";
 import { Color, printLine, requestInput } from "../io";
+import { execSync } from "child_process";
 
 const actionHelp: Record<Action | ManualAction, string> = {
   help: "Print out help for all actions",
@@ -8,6 +9,7 @@ const actionHelp: Record<Action | ManualAction, string> = {
   addFiles: "File selector to add file contents to history",
   edit: "AI with the capability to edit and create files",
   respond: "AI designed to provide help and converse",
+  git: "Execute git commands directly",
 };
 
 export async function prompt(history: History) {
@@ -30,6 +32,25 @@ export async function prompt(history: History) {
       return;
     }
 
+    if (response.startsWith("/git")) {
+      const gitCommand = response.substring(4);
+      if (!gitCommand.trim()) {
+        printLine("Missing git command", Color.Red);
+      } else {
+        try {
+          const output = execSync("git " + gitCommand.trim(), {
+            encoding: "utf8",
+            stdio: ["inherit", "pipe", "pipe"],
+          });
+          if (output) printLine(output);
+        } catch (error: any) {
+          printLine(error.message, Color.Red);
+        }
+      }
+      history.push({ type: "action", action: "prompt" });
+      return;
+    }
+
     const action = response.substring(1) as any;
     if (action in actionHelp) {
       history.push({ type: "action", action });
@@ -43,3 +64,4 @@ export async function prompt(history: History) {
     history.push({ type: "action", action: "prompt" });
   }
 }
+
