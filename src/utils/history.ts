@@ -10,7 +10,7 @@ if (!fs.existsSync(HISTORY_FOLDER)) {
   fs.mkdirSync(HISTORY_FOLDER, { recursive: true });
 }
 
-const HISTORY_CACHE_FILE = join(
+export const HISTORY_CACHE_FILE = join(
   HISTORY_FOLDER,
   `history-cache-${encodeURIComponent(process.cwd())}.json`,
 );
@@ -24,7 +24,10 @@ export function loadHistory(): History {
     try {
       const data = fs.readFileSync(HISTORY_CACHE_FILE, "utf8");
       printLine(`Loaded history from cache`);
-      return JSON.parse(data);
+      const oldHistory: History = JSON.parse(data);
+      // this helps to prevent infinite loop bugs
+      oldHistory.push({ type: "action", action: "prompt" });
+      return oldHistory;
     } catch (error) {
       console.error("Error loading history cache:", error);
     }

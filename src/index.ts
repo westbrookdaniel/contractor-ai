@@ -8,8 +8,9 @@ import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/history";
 import { edit } from "./utils/actions/edit";
 
+// all actions ai can determine to run automatically
 // dont want to include 'prompt', its not great at that
-const AVAILABLE_ACTIONS: Action[] = ["respond", "edit", "addFiles"];
+const AVAILABLE_AI_ACTIONS: Action[] = ["respond", "edit", "addFiles"];
 
 async function main(): Promise<void> {
   clearConsole();
@@ -28,7 +29,7 @@ async function main(): Promise<void> {
   });
 
   while (true) {
-    const action = await determineAction(history, AVAILABLE_ACTIONS);
+    const action = await determineAction(history, AVAILABLE_AI_ACTIONS);
 
     switch (action) {
       case "prompt":
@@ -38,6 +39,9 @@ async function main(): Promise<void> {
         await respond(history);
         break;
       case "edit":
+        await edit(history);
+        break;
+      case "clear":
         await edit(history);
         break;
       case "addFiles":
@@ -66,4 +70,3 @@ main().catch((error) => {
   console.error("An error occurred:", error);
   process.exit(1);
 });
-

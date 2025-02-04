@@ -6,9 +6,11 @@ export type MessageHistory = {
 
 export type ActionHistory = {
   type: "action";
-  action: Action;
+  action: Action | ManualAction;
 };
 
 export type History = (MessageHistory | ActionHistory)[];
 
 export type Action = "prompt" | "edit" | "respond" | "addFiles";
+// We never want an AI to be able to initiate these actions
+export type ManualAction = "clear";

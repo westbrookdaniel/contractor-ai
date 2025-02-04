@@ -1,5 +1,5 @@
 import { generateObject } from "ai";
-import type { Action, History, MessageHistory } from "../types";
+import type { Action, History, ManualAction, MessageHistory } from "../types";
 import { clearLines, Color, printLine } from "./io";
 import { heavyModel } from "./model";
 import { z } from "zod";
@@ -14,7 +14,7 @@ const ACTION_PROMPTS: Record<Action, string> = {
 export async function determineAction(
   history: History,
   allowedActions: Action[],
-): Promise<Action> {
+): Promise<Action | ManualAction> {
   const last = history[history.length - 1];
   if (last.type === "action") {
     return last.action;
