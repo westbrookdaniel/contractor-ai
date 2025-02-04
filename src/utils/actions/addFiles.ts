@@ -4,7 +4,7 @@ import fs from "fs";
 import { determineAction } from "../conversation";
 import { GIT_ROOT, requestFiles } from "../files";
 
-export async function askForRelevantFiles(history: History) {
+export async function addFiles(history: History) {
   printLine(formatPrompt("Select all relevant files"), Color.Green);
 
   const filePaths = await requestFiles(GIT_ROOT);
@@ -27,4 +27,3 @@ export async function askForRelevantFiles(history: History) {
     },
   );
 }
-

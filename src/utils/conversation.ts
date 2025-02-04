@@ -7,7 +7,7 @@ import { z } from "zod";
 const ACTION_PROMPTS: Record<Action, string> = {
   respond: "Provide assistance, converse, and request more context",
   edit: "Edit or create files if the request is clear and actionable",
-  askForRelevantFiles: "Request the user to select relevant files",
+  addFiles: "Request the user to select relevant files",
   prompt: "Ask the user to respond",
 };
 
@@ -94,4 +94,3 @@ export function historyToMessages(
 
   return filtered.map((m) => ({ role: m.role, content: m.content }));
 }
-

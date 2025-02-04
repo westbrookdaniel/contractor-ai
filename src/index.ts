@@ -4,12 +4,12 @@ import { prompt } from "./utils/actions/prompt";
 import { determineAction } from "./utils/conversation";
 import type { History, Action } from "./types";
 import { respond } from "./utils/actions/respond";
-import { askForRelevantFiles } from "./utils/actions/askForRelevantFiles";
+import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/history";
 import { edit } from "./utils/actions/edit";
 
 // dont want to include 'prompt', its not great at that
-const AVAILABLE_ACTIONS: Action[] = ["respond", "edit", "askForRelevantFiles"];
+const AVAILABLE_ACTIONS: Action[] = ["respond", "edit", "addFiles"];
 
 async function main(): Promise<void> {
   clearConsole();
@@ -40,8 +40,8 @@ async function main(): Promise<void> {
       case "edit":
         await edit(history);
         break;
-      case "askForRelevantFiles":
-        await askForRelevantFiles(history);
+      case "addFiles":
+        await addFiles(history);
         break;
     }
 
