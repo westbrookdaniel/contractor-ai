@@ -54,20 +54,6 @@ async function main(): Promise<void> {
   }
 }
 
-// check we don't have a dirty git before starting
-if (!process.env.FORCE_DIRTY) {
-  try {
-    const gitDiff = execSync("git diff", { encoding: "utf-8" });
-    if (gitDiff.length > 0) {
-      console.error("Commit or stash your changes before proceeding.");
-      process.exit(1);
-    }
-  } catch (error) {
-    console.error("Error checking git diff:", error);
-    process.exit(1);
-  }
-}
-
 // run the cli
 main().catch((error) => {
   console.error("An error occurred:", error);

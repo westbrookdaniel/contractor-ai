@@ -72,9 +72,7 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
           : "[ ]";
       const suffix = item.isDirectory() ? "/" : "";
 
-      printLine(
-        `${prefix} ${select} ${item.name}${suffix}${Color.Reset}`,
-      );
+      printLine(`${prefix} ${select} ${item.name}${suffix}${Color.Reset}`);
     });
 
     // Fill remaining lines with empty space if needed
