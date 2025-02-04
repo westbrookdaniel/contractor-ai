@@ -13,4 +13,5 @@ export type History = (MessageHistory | ActionHistory)[];
 
 export type Action = "prompt" | "edit" | "respond" | "addFiles";
 // We never want an AI to be able to initiate these actions
-export type ManualAction = "clear" | "help" | "git";
+export type ManualAction = "clear" | "help";
+
