@@ -1,7 +1,7 @@
 import { streamText } from "ai";
 import type { History } from "../../types";
 import { historyToMessages } from "../conversation";
-import { printLine, Color, printStream, clearLines } from "../io";
+import { printLine, Color, printStream } from "../io";
 import { heavyModel } from "../model";
 import { writeToFile } from "../tools/writeToFile";
 
@@ -28,14 +28,9 @@ export async function edit(history: History) {
 
   const response = await result.text;
 
-  // this happens very occasionally, just pretend it doesnt
   if (response.trim() === "") {
-    clearLines(2);
-    history.push({
-      type: "action",
-      action: "prompt",
-    });
-    return;
+    // we need to throw otherise we can infinite loop very easily
+    throw new Error("Failed to respond");
   }
 
   printLine();
