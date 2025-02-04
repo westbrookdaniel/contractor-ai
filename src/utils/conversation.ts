@@ -85,10 +85,10 @@ export function historyToData(history: History) {
   return JSON.stringify(history.slice(-MAX_DATA));
 }
 
-export function historyToMessages(history: History) {
+export function historyToMessages(history: History, count = MAX_MESSAGES) {
   const filtered = history
-    .slice(-MAX_MESSAGES)
-    .filter((h) => h.type === "message") as MessageHistory[];
+    .filter((h) => h.type === "message")
+    .slice(-count) as MessageHistory[];
 
   return filtered.map((m) => ({ role: m.role, content: m.content }));
 }
