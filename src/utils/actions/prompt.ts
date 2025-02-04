@@ -48,7 +48,7 @@ export async function prompt(history: History) {
             "Your response should works towards or complete the greater goal. ALWAYS RESPOND.\n" +
             "DO NOT DO THE TASK JUST ASK FOR IT TO BE DONE",
         },
-        ...historyToMessages(history, 5),
+        ...historyToMessages(history, 3),
       ],
     });
 
