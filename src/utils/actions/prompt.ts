@@ -11,7 +11,7 @@ import { execSync } from "child_process";
 import { heavyModel } from "../model";
 import { historyToMessages } from "../conversation";
 
-let AUTO_GOAL = "";
+let AUTO_PLAN = "";
 
 const actionHelp: Record<Action | ManualAction, string> = {
   help: "Print out help for all actions",
@@ -31,7 +31,7 @@ export async function prompt(history: History) {
     );
   }
 
-  if (AUTO_GOAL) {
+  if (AUTO_PLAN) {
     printLine(formatPrompt("Prompt (AUTO)"), Color.Green);
 
     const result = streamText({
@@ -41,11 +41,11 @@ export async function prompt(history: History) {
           role: "system",
           content:
             "You are a senior software engineer.\n" +
-            "You are working with another software engineer to complete the task of:" +
-            `"${AUTO_GOAL}"` +
+            "You are working with another software engineer to complete the task of:\n" +
+            AUTO_PLAN +
             "\n" +
-            "Be very concise and ask for the engineer to perform an\n" +
-            "action that works towards or completes the greater goal.",
+            "Be concise and only ask for the engineer to complete the next pending task.\n" +
+            "Your response should works towards or complete the greater goal. ALWAYS RESPOND.",
         },
         ...historyToMessages(history, 5),
       ],
@@ -85,7 +85,24 @@ export async function prompt(history: History) {
       if (!goal) {
         printLine("A goal is required. /auto [goal]\n", Color.Red);
       } else {
-        AUTO_GOAL = goal;
+        printLine(formatPrompt("Plan (AUTO)"), Color.Green);
+        const result = streamText({
+          model: heavyModel,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a senior software engineer.\n" +
+                "You are working with another software engineer to complete the task of:\n" +
+                goal +
+                "\n" +
+                "Devise a very concise step by step plan.",
+            },
+            ...historyToMessages(history, 5),
+          ],
+        });
+        await printStream(result);
+        AUTO_PLAN = goal + "\nPlan:\n" + (await result.text);
       }
 
       history.push({ type: "action", action: "prompt" });
