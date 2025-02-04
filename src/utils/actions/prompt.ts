@@ -45,7 +45,8 @@ export async function prompt(history: History) {
             AUTO_PLAN +
             "\n" +
             "Be concise and only ask for the engineer to complete the next pending task.\n" +
-            "Your response should works towards or complete the greater goal. ALWAYS RESPOND.",
+            "Your response should works towards or complete the greater goal. ALWAYS RESPOND.\n" +
+            "DO NOT DO THE TASK JUST ASK FOR IT TO BE DONE",
         },
         ...historyToMessages(history, 5),
       ],
@@ -96,7 +97,8 @@ export async function prompt(history: History) {
                 "You are working with another software engineer to complete the task of:\n" +
                 goal +
                 "\n" +
-                "Devise a very concise step by step plan.",
+                "Devise a very concise step by step plan.\n" +
+                "DO NOT EXECUTE THE PLAN JUST OUTPUT THE PLAN",
             },
             ...historyToMessages(history, 5),
           ],
