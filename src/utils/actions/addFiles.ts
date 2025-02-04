@@ -1,7 +1,6 @@
 import type { History } from "../../types";
 import { Color, formatPrompt, printLine } from "../io";
 import fs from "fs";
-import { determineAction } from "../conversation";
 import { GIT_ROOT, requestFiles } from "../files";
 
 export async function addFiles(history: History) {
@@ -22,8 +21,8 @@ export async function addFiles(history: History) {
     },
     {
       type: "action",
-      // limit what the follow up actions should be
-      action: await determineAction(history, ["edit", "respond"]),
+      // a semi sensible default
+      action: "prompt",
     },
   );
 }
