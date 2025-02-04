@@ -13,10 +13,12 @@ const actionHelp: Record<Action | ManualAction, string> = {
 };
 
 export async function prompt(history: History) {
-  const stdout = execSync("git status --short");
-  console.log(
-    `\n${Color.Magenta}Pending Changes\n${stdout.toString().trimEnd()}${Color.Reset}`,
-  );
+  const stdout = execSync("git status --short").toString();
+  if (stdout.trim().length) {
+    console.log(
+      `\n${Color.Magenta}Pending Changes\n${stdout.trimEnd()}${Color.Reset}`,
+    );
+  }
 
   const response = await requestInput("Prompt");
 
