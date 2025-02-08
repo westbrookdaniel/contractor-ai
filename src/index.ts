@@ -1,5 +1,4 @@
 import { clearConsole, printDivider, printLine } from "./utils/io";
-import { execSync } from "child_process";
 import { prompt } from "./utils/actions/prompt";
 import { determineAction } from "./utils/conversation";
 import type { History, Action } from "./types";

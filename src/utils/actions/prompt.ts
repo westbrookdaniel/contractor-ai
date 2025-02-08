@@ -1,17 +1,6 @@
-import { streamText } from "ai";
 import type { Action, History, ManualAction } from "../../types";
-import {
-  Color,
-  formatPrompt,
-  printLine,
-  printStream,
-  requestInput,
-} from "../io";
+import { Color, printLine, requestInput } from "../io";
 import { execSync } from "child_process";
-import { model } from "../model";
-import { historyToMessages } from "../conversation";
-
-let AUTO_PLAN = "";
 
 const actionHelp: Record<Action | ManualAction, string> = {
   help: "Print out help for all actions",
@@ -20,7 +9,6 @@ const actionHelp: Record<Action | ManualAction, string> = {
   addFiles: "File selector to add file contents to history",
   edit: "AI with the capability to edit and create files",
   respond: "AI designed to provide help and converse",
-  auto: "Run automatically until exit to achieve provided goal: /auto [goal]",
 };
 
 export async function prompt(history: History) {
@@ -29,37 +17,6 @@ export async function prompt(history: History) {
     console.log(
       `\n${Color.Magenta}Pending Changes\n${stdout.trimEnd()}${Color.Reset}`,
     );
-  }
-
-  if (AUTO_PLAN) {
-    printLine(formatPrompt("Prompt (AUTO)"), Color.Green);
-
-    const result = streamText({
-      model: model,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a senior software engineer.\n" +
-            "You are working with another software engineer to complete the task of:\n" +
-            AUTO_PLAN +
-            "\n" +
-            "Be concise and only ask for the engineer to complete the next pending task.\n" +
-            "Your response should works towards or complete the greater goal. ALWAYS RESPOND.\n" +
-            "DO NOT DO THE TASK JUST ASK FOR IT TO BE DONE",
-        },
-        ...historyToMessages(history, 3),
-      ],
-    });
-
-    await printStream(result);
-
-    history.push({
-      type: "message",
-      role: "user",
-      content: await result.text,
-    });
-    return;
   }
 
   const response = await requestInput("Prompt");
@@ -77,36 +34,6 @@ export async function prompt(history: History) {
       for (const action in actionHelp) {
         printLine(`/${action} - ${(actionHelp as any)[action]}`, Color.Gray);
       }
-      history.push({ type: "action", action: "prompt" });
-      return;
-    }
-
-    if (response.startsWith("/auto")) {
-      const goal = response.substring("/auto ".length).trim();
-      if (!goal) {
-        printLine("A goal is required. /auto [goal]\n", Color.Red);
-      } else {
-        printLine(formatPrompt("Plan (AUTO)"), Color.Green);
-        const result = streamText({
-          model: model,
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a senior software engineer.\n" +
-                "You are working with another software engineer to complete the task of:\n" +
-                goal +
-                "\n" +
-                "Devise a very concise step by step plan.\n" +
-                "DO NOT EXECUTE THE PLAN JUST OUTPUT THE PLAN",
-            },
-            ...historyToMessages(history, 5),
-          ],
-        });
-        await printStream(result);
-        AUTO_PLAN = goal + "\nPlan:\n" + (await result.text);
-      }
-
       history.push({ type: "action", action: "prompt" });
       return;
     }
