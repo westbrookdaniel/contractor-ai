@@ -50,7 +50,7 @@ export async function determineAction(
           allowedActions
             .map(
               (action, i) =>
-                `${i + 1}. '${action}' ${ACTION_PROMPTS[action]}\n`,
+                i + 1 + `. '${action}' ` + ACTION_PROMPTS[action] + "\n",
             )
             .join("") +
           "\n" +

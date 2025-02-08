@@ -2,6 +2,7 @@ import type { History } from "../types";
 import fs from "fs";
 import { join } from "path";
 import { homedir } from "os";
+
 const CACHE_FOLDER = join(homedir(), ".config", "contractor-ai");
 const DIR_CACHE = join(CACHE_FOLDER, encodeURIComponent(process.cwd()));
 
@@ -10,11 +11,10 @@ if (!fs.existsSync(DIR_CACHE)) {
 }
 
 const HISTORY_FILE = join(CACHE_FOLDER, "history.json");
+const MEMORY_FILE = join(CACHE_FOLDER, "memory.txt");
 
-export function loadCache() {
-  const history = loadHistory();
-  return { history };
-}
+export const loadMemoryCache = () => loadFile(MEMORY_FILE);
+export const saveMemoryCache = (c: string) => saveFile(MEMORY_FILE, c);
 
 export function saveHistory(history: History): void {
   try {
@@ -41,4 +41,23 @@ export function loadHistory(): History {
 
 export function clearCache() {
   fs.rmSync(DIR_CACHE);
+}
+
+function loadFile(file: string) {
+  if (fs.existsSync(file)) {
+    try {
+      return fs.readFileSync(file, "utf8");
+    } catch (error) {
+      console.error("Error loading file:", error);
+    }
+  }
+  return "";
+}
+
+function saveFile(file: string, contents: string): void {
+  try {
+    fs.writeFileSync(file, contents, "utf8");
+  } catch (error) {
+    console.error("Error saving file:", error);
+  }
 }

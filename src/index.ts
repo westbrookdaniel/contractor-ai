@@ -4,9 +4,10 @@ import { determineAction } from "./utils/conversation";
 import type { Action } from "./types";
 import { respond } from "./utils/actions/respond";
 import { addFiles } from "./utils/actions/addFiles";
-import { loadCache, saveHistory } from "./utils/cache";
+import { loadHistory, saveHistory } from "./utils/cache";
 import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
+import { updateMemory } from "./utils/memory";
 
 // all actions ai can determine to run automatically
 // dont want to include 'prompt', its not great at that
@@ -18,7 +19,7 @@ async function main(): Promise<void> {
   printDivider();
   printLine("Hello. How can I help?");
 
-  const { history } = loadCache();
+  const history = loadHistory();
 
   // Set up exit handlers to save history
   process.on("SIGINT", () => {
@@ -36,6 +37,7 @@ async function main(): Promise<void> {
     switch (action) {
       case "prompt":
         await prompt(history);
+        await updateMemory(history);
         break;
       case "respond":
         await respond(history);
