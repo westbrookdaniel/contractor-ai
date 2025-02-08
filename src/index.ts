@@ -1,12 +1,12 @@
 import { clearConsole, printDivider, printLine } from "./utils/io";
 import { prompt } from "./utils/actions/prompt";
 import { condenseHistory, determineAction } from "./utils/conversation";
-import type { Action } from "./types";
 import { respond } from "./utils/actions/respond";
 import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/cache";
 import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
+import { memory } from "./utils/actions/memory";
 
 async function main(): Promise<void> {
   clearConsole();
@@ -44,12 +44,13 @@ async function main(): Promise<void> {
       case "clear":
         clear(history);
         break;
+      case "memory":
+        memory(history);
+        break;
       case "addFiles":
         await addFiles(history);
         break;
     }
-
-    condenseHistory(history);
   }
 }
 

@@ -3,7 +3,7 @@ import fs from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import { updateMemory } from "./memory";
-import { historyToData } from "./conversation";
+import { condenseHistory, historyToData } from "./conversation";
 
 const CACHE_FOLDER = join(homedir(), ".config", "contractor-ai");
 const DIR_CACHE = join(CACHE_FOLDER, encodeURIComponent(process.cwd()));
@@ -20,6 +20,7 @@ export const saveMemoryCache = (c: string) => saveFile(MEMORY_FILE, c);
 
 export async function saveHistory(history: History) {
   await updateMemory(history);
+  condenseHistory(history);
   try {
     fs.writeFileSync(
       HISTORY_FILE,
