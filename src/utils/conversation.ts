@@ -87,8 +87,16 @@ export function historyToData(history: History) {
 
 export function historyToMessages(history: History, count = MAX_MESSAGES) {
   const filtered = history
-    .filter((h) => h.type === "message")
+    .filter((h) => h.type === "message" || h.type === "data")
     .slice(-count) as MessageHistory[];
 
   return filtered.map((m) => ({ role: m.role, content: m.content }));
+}
+
+export function condenseHistory(history: History) {
+  const next = history.filter((h) => h.type !== "data");
+  if (next.length !== history.length) {
+    printLine("Condensing History", Color.Gray);
+    history.splice(0, history.length, ...next);
+  }
 }

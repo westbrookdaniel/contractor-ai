@@ -15,8 +15,8 @@ export async function addFiles(history: History) {
 
   history.push(
     {
-      type: "message",
-      role: "user", // role "data" ?
+      type: "data",
+      role: "user",
       content: JSON.stringify(fileContents),
     },
     {
