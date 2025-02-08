@@ -37,10 +37,10 @@ async function main(): Promise<void> {
     switch (action) {
       case "prompt":
         await prompt(history);
-        await updateMemory(history);
         break;
       case "respond":
         await respond(history);
+        await updateMemory(history);
         break;
       case "edit":
         await edit(history);
