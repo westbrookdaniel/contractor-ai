@@ -8,7 +8,7 @@ import {
   requestInput,
 } from "../io";
 import { execSync } from "child_process";
-import { heavyModel } from "../model";
+import { model } from "../model";
 import { historyToMessages } from "../conversation";
 
 let AUTO_PLAN = "";
@@ -35,7 +35,7 @@ export async function prompt(history: History) {
     printLine(formatPrompt("Prompt (AUTO)"), Color.Green);
 
     const result = streamText({
-      model: heavyModel,
+      model: model,
       messages: [
         {
           role: "system",
@@ -88,7 +88,7 @@ export async function prompt(history: History) {
       } else {
         printLine(formatPrompt("Plan (AUTO)"), Color.Green);
         const result = streamText({
-          model: heavyModel,
+          model: model,
           messages: [
             {
               role: "system",

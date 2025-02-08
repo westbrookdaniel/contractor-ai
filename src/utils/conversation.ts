@@ -1,7 +1,7 @@
 import { generateObject } from "ai";
 import type { Action, History, ManualAction, MessageHistory } from "../types";
 import { clearLines, Color, printLine } from "./io";
-import { heavyModel } from "./model";
+import { model } from "./model";
 import { z } from "zod";
 
 const ACTION_PROMPTS: Record<Action, string> = {
@@ -39,7 +39,7 @@ export async function determineAction(
   const actionSchema = z.enum(allowedActions as [Action, ...Action[]]);
 
   const response = await generateObject({
-    model: heavyModel,
+    model: model,
     messages: [
       {
         role: "system",

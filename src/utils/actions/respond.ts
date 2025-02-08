@@ -2,13 +2,13 @@ import { streamText } from "ai";
 import type { History } from "../../types";
 import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
-import { heavyModel } from "../model";
+import { model } from "../model";
 
 export async function respond(history: History) {
   printLine("\n* Contractor:", Color.Blue);
 
   const result = streamText({
-    model: heavyModel,
+    model: model,
     messages: [
       {
         role: "system",

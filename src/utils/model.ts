@@ -1,4 +1,5 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-export const heavyModel = anthropic("claude-3-5-sonnet-20241022");
-export const lightModel = anthropic("claude-3-5-haiku-20241022");
+const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
+
+export const model = google("gemini-2.0-flash-001");
