@@ -7,11 +7,6 @@ import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/cache";
 import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
-import { updateMemory } from "./utils/memory";
-
-// all actions ai can determine to run automatically
-// dont want to include 'prompt', its not great at that
-const AVAILABLE_AI_ACTIONS: Action[] = ["respond", "edit", "addFiles"];
 
 async function main(): Promise<void> {
   clearConsole();
@@ -32,7 +27,7 @@ async function main(): Promise<void> {
   });
 
   while (true) {
-    const action = await determineAction(history, AVAILABLE_AI_ACTIONS);
+    const action = await determineAction(history);
 
     switch (action) {
       case "prompt":

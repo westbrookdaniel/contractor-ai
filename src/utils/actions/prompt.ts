@@ -19,16 +19,10 @@ export async function prompt(history: History) {
     );
   }
 
-  const response = await requestInput("Prompt");
+  const response = await requestInput("Prompt (or / for actions)");
 
-  history.push({
-    type: "message",
-    role: "user",
-    content: response,
-  });
-
-  // manual actions
   if (response.startsWith("/")) {
+    // manual actions
     if (response === "/help") {
       printLine();
       for (const action in actionHelp) {
@@ -49,5 +43,12 @@ export async function prompt(history: History) {
       printLine(`/${action} - ${(actionHelp as any)[action]}`, Color.Gray);
     }
     history.push({ type: "action", action: "prompt" });
+  } else {
+    // just a normal prompt
+    history.push({
+      type: "message",
+      role: "user",
+      content: response,
+    });
   }
 }

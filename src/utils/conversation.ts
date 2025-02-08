@@ -7,13 +7,13 @@ import { z } from "zod";
 const ACTION_PROMPTS: Record<Action, string> = {
   respond: "Provide assistance, converse, and request more context",
   edit: "Edit or create files if the request is clear and actionable",
-  addFiles: "Request the user to select relevant files",
   prompt: "Ask the user to respond",
 };
 
+const allowedActions = Object.keys(ACTION_PROMPTS);
+
 export async function determineAction(
   history: History,
-  allowedActions: Action[],
 ): Promise<Action | ManualAction> {
   const last = history[history.length - 1];
 
@@ -50,7 +50,11 @@ export async function determineAction(
           allowedActions
             .map(
               (action, i) =>
-                i + 1 + `. '${action}' ` + ACTION_PROMPTS[action] + "\n",
+                i +
+                1 +
+                `. '${action}' ` +
+                (ACTION_PROMPTS as any)[action] +
+                "\n",
             )
             .join("") +
           "\n" +
