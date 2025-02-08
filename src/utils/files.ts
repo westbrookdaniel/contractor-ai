@@ -1,7 +1,6 @@
 import { clearLines, Color, printLine } from "./io";
 import { execSync } from "child_process";
 import path from "path";
-import fs from "fs";
 import readline from "readline";
 
 export function findGitRoot(initialPath: string): string {
@@ -17,8 +16,7 @@ export function findGitRoot(initialPath: string): string {
 
 export const GIT_ROOT = findGitRoot(process.cwd());
 
-export async function requestFiles(startPath = ".", maxLines = 20) {
-  let currentPath = path.resolve(startPath);
+export async function pickFiles(files: string[], maxLines = 20) {
   let selected = new Set<string>();
   let cursor = 0;
   let offset = 0;
@@ -31,19 +29,7 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
   process.stdin.setEncoding("utf-8");
 
   async function listFiles() {
-    try {
-      const items = fs.readdirSync(currentPath, { withFileTypes: true });
-      return [
-        { name: "..", isDirectory: () => true },
-        ...items.sort((a, b) => {
-          if (a.isDirectory() === b.isDirectory())
-            return a.name.localeCompare(b.name);
-          return b.isDirectory() ? 1 : -1;
-        }),
-      ];
-    } catch (error) {
-      return [{ name: "..", isDirectory: () => true }];
-    }
+    return files.toSorted();
   }
 
   function renderList(
@@ -62,17 +48,12 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
 
     // Render visible items
     visibleItems.forEach((item, i) => {
-      const isSelected = selected.has(path.resolve(currentPath, item.name));
+      const isSelected = selected.has(path.resolve(GIT_ROOT, item));
       const isCursor = i + offset === cursor;
       const prefix = isCursor ? `${Color.Gray}>${Color.Reset}` : " ";
-      const select = isSelected
-        ? `${Color.Green}[x]`
-        : item.isDirectory()
-          ? "   "
-          : "[ ]";
-      const suffix = item.isDirectory() ? "/" : "";
+      const select = isSelected ? `${Color.Green}[x]` : "[ ]";
 
-      printLine(`${prefix} ${select} ${item.name}${suffix}${Color.Reset}`);
+      printLine(`${prefix} ${select} ${item}${Color.Reset}`);
     });
 
     // Fill remaining lines with empty space if needed
@@ -85,10 +66,7 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
       `Arrow keys to navigate, [space] to select, [enter] to submit`,
       Color.Gray,
     );
-    printLine(
-      `${selected.size} selected. Dir: ${path.relative(process.cwd(), currentPath)}/`,
-      Color.Gray,
-    );
+    printLine(`${selected.size} selected`, Color.Gray);
   }
 
   const filePaths = await new Promise<string[]>(async (resolve) => {
@@ -105,20 +83,13 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
             process.exit(0);
 
           case " ": // Space
-            if (items[cursor].isDirectory()) {
-              currentPath = path.resolve(currentPath, items[cursor].name);
-              cursor = 0;
-              offset = 0;
-              renderList(await listFiles());
+            const fullPath = path.resolve(GIT_ROOT, items[cursor]);
+            if (selected.has(fullPath)) {
+              selected.delete(fullPath);
             } else {
-              const fullPath = path.resolve(currentPath, items[cursor].name);
-              if (selected.has(fullPath)) {
-                selected.delete(fullPath);
-              } else {
-                selected.add(fullPath);
-              }
-              renderList(items);
+              selected.add(fullPath);
             }
+            renderList(items);
             break;
 
           case "\u001b[A": // Up arrow
@@ -159,7 +130,7 @@ export async function requestFiles(startPath = ".", maxLines = 20) {
 
   clearLines(maxLines);
   printLine(
-    filePaths.map((f) => path.relative(startPath, f)).join("\n"),
+    filePaths.map((f) => path.relative(GIT_ROOT, f)).join("\n"),
     Color.Gray,
   );
 

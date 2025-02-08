@@ -1,12 +1,15 @@
 import type { History } from "../../types";
 import { Color, formatPrompt, printLine } from "../io";
 import fs from "fs";
-import { GIT_ROOT, requestFiles } from "../files";
+import { pickFiles } from "../files";
 
-export async function addFiles(history: History) {
-  printLine(formatPrompt("Select all relevant files"), Color.Green);
+export async function addFiles(history: History, changedFiles: Set<string>) {
+  printLine(
+    formatPrompt("Select recently changed files to add to context"),
+    Color.Green,
+  );
 
-  const filePaths = await requestFiles(GIT_ROOT);
+  const filePaths = await pickFiles([...changedFiles]);
 
   const fileContents: Record<string, string> = {};
   for (const filePath of filePaths) {

@@ -51,7 +51,7 @@ async function main(): Promise<void> {
         memory(history);
         break;
       case "addFiles":
-        await addFiles(history);
+        await addFiles(history, changedFiles);
         break;
     }
   }

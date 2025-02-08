@@ -1,10 +1,10 @@
 import * as fs from "node:fs";
 import { findGitRoot } from "./files";
 
-export async function startFileWatcher() {
+export function startFileWatcher() {
   const root = findGitRoot(process.cwd());
 
-  const changedFiles = new Set();
+  const changedFiles = new Set<string>();
 
   fs.watch(root, { recursive: true }, (event, filename) => {
     if (event !== "change") return;
@@ -16,7 +16,7 @@ export async function startFileWatcher() {
         if (stats.isFile()) {
           fs.readFile(absolutePath, "utf-8", (err) => {
             if (err) return;
-            changedFiles.add(filename);
+            changedFiles.add(absolutePath);
           });
         }
       });
