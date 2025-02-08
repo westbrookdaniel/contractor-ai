@@ -1,10 +1,10 @@
 import { clearConsole, printDivider, printLine } from "./utils/io";
 import { prompt } from "./utils/actions/prompt";
 import { determineAction } from "./utils/conversation";
-import type { History, Action } from "./types";
+import type { Action } from "./types";
 import { respond } from "./utils/actions/respond";
 import { addFiles } from "./utils/actions/addFiles";
-import { loadHistory, saveHistory } from "./utils/history";
+import { loadCache, saveHistory } from "./utils/cache";
 import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
 
@@ -16,7 +16,9 @@ async function main(): Promise<void> {
   clearConsole();
   printLine("\nContractor AI");
   printDivider();
-  const history: History = loadHistory();
+  printLine("Hello. How can I help?");
+
+  const { history } = loadCache();
 
   // Set up exit handlers to save history
   process.on("SIGINT", () => {
