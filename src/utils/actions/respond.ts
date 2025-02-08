@@ -3,6 +3,7 @@ import type { History } from "../../types";
 import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
+import { loadMemoryCache } from "../cache";
 
 export async function respond(history: History) {
   printLine("\n* Contractor:", Color.Blue);
@@ -15,7 +16,10 @@ export async function respond(history: History) {
         content:
           "You are a senior contractor software engineer\n" +
           "Be concise for your written responses, and complete with your code responses.\n" +
-          "Be helpful. Ask a follow up question.",
+          "Be helpful. Ask a follow up question.\n" +
+          "\n" +
+          "Here is some context about about this repository:\n" +
+          loadMemoryCache(),
       },
       ...historyToMessages(history),
     ],
