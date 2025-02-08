@@ -24,7 +24,7 @@ export async function saveHistory(history: History) {
     fs.writeFileSync(
       HISTORY_FILE,
       // we only store recent data in cache, rest should be captured in memory
-      JSON.stringify(historyToData(history), null, 2),
+      historyToData(history),
       "utf8",
     );
   } catch (error) {
