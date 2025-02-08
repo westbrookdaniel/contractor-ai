@@ -40,7 +40,8 @@ export function loadHistory(): History {
 }
 
 export function clearCache() {
-  fs.rmSync(DIR_CACHE);
+  fs.rmSync(HISTORY_FILE);
+  fs.rmSync(MEMORY_FILE);
 }
 
 function loadFile(file: string) {
