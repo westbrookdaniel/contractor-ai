@@ -52,8 +52,9 @@ export async function pickFiles(files: string[], maxLines = 20) {
       const isCursor = i + offset === cursor;
       const prefix = isCursor ? `${Color.Gray}>${Color.Reset}` : " ";
       const select = isSelected ? `${Color.Green}[x]` : "[ ]";
+      const short = path.relative(GIT_ROOT, item);
 
-      printLine(`${prefix} ${select} ${item}${Color.Reset}`);
+      printLine(`${prefix} ${select} ${short}${Color.Reset}`);
     });
 
     // Fill remaining lines with empty space if needed
@@ -130,7 +131,9 @@ export async function pickFiles(files: string[], maxLines = 20) {
 
   clearLines(maxLines);
   printLine(
-    filePaths.map((f) => path.relative(GIT_ROOT, f)).join("\n"),
+    filePaths.length === 0
+      ? "No files added"
+      : filePaths.map((f) => path.relative(GIT_ROOT, f)).join("\n"),
     Color.Gray,
   );
 
