@@ -1,12 +1,13 @@
 import { clearConsole, printDivider, printLine } from "./utils/io";
 import { prompt } from "./utils/actions/prompt";
-import { condenseHistory, determineAction } from "./utils/conversation";
+import { determineAction } from "./utils/conversation";
 import { respond } from "./utils/actions/respond";
 import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/cache";
 import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
 import { memory } from "./utils/actions/memory";
+import { startFileWatcher } from "./utils/watcher";
 
 async function main(): Promise<void> {
   clearConsole();
@@ -15,6 +16,8 @@ async function main(): Promise<void> {
   printLine("Hello. How can I help?");
 
   const history = loadHistory();
+
+  const changedFiles = startFileWatcher();
 
   // Set up exit handlers to save history
   process.on("SIGINT", () => {
@@ -34,11 +37,11 @@ async function main(): Promise<void> {
         await prompt(history);
         break;
       case "respond":
-        await respond(history);
+        await respond(history, changedFiles);
         await saveHistory(history);
         break;
       case "edit":
-        await edit(history);
+        await edit(history, changedFiles);
         await saveHistory(history);
         break;
       case "clear":

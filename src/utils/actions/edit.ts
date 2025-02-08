@@ -6,7 +6,7 @@ import { model } from "../model";
 import { writeToFile } from "../tools/writeToFile";
 import { loadMemoryCache } from "../cache";
 
-export async function edit(history: History) {
+export async function edit(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
 
   const result = streamText({
@@ -20,10 +20,15 @@ export async function edit(history: History) {
           "Don't tell me what the changes were, I can look in the files you write in to see that.\n" +
           "\n" +
           "Here is some context about about this repository:\n" +
-          loadMemoryCache(),
+          loadMemoryCache() +
+          "\n\n" +
+          "And here are files the user has changed recently:\n" +
+          [...changedFiles].join("\n"),
       },
       ...historyToMessages(history),
     ],
+    // TODO make AI always try to get contents of a file before it writes to it
+    // add new tool getFileContents and then update content to make it
     tools: { writeToFile },
     maxSteps: 5, // max 5 actions
   });

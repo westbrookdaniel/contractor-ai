@@ -5,7 +5,7 @@ import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
 import { loadMemoryCache } from "../cache";
 
-export async function respond(history: History) {
+export async function respond(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
 
   const result = streamText({
@@ -21,7 +21,10 @@ export async function respond(history: History) {
           "The user has the ability to add files to your context if you request for them.\n" +
           "\n" +
           "Here is some context about about this repository:\n" +
-          loadMemoryCache(),
+          loadMemoryCache() +
+          "\n\n" +
+          "And here are files the user has changed recently:\n" +
+          [...changedFiles].join("\n"),
       },
       ...historyToMessages(history),
     ],
