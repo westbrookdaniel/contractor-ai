@@ -30,8 +30,12 @@ export async function updateMemory(history: History) {
         relevant, and captures the key aspects of the conversation. If no updates 
         are necessary, simply return the existing memory.
 
+        Also include a summary of important files, or file conventions you
+        have observed, or any other information that would help solve problems
+        in a large codebase.
+
         This memory should serve the purpose of providing information about the
-        repository and global context that would assist in future actions
+        repository and global context that would assist in future actions.
     `,
   });
 

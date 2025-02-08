@@ -40,7 +40,7 @@ async function main(): Promise<void> {
         break;
       case "respond":
         await respond(history);
-        await updateMemory(history);
+        await saveHistory(history);
         break;
       case "edit":
         await edit(history);
@@ -52,8 +52,6 @@ async function main(): Promise<void> {
         await addFiles(history);
         break;
     }
-
-    saveHistory(history);
   }
 }
 

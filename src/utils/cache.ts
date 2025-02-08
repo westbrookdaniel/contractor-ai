@@ -2,6 +2,8 @@ import type { History } from "../types";
 import fs from "fs";
 import { join } from "path";
 import { homedir } from "os";
+import { updateMemory } from "./memory";
+import { historyToData } from "./conversation";
 
 const CACHE_FOLDER = join(homedir(), ".config", "contractor-ai");
 const DIR_CACHE = join(CACHE_FOLDER, encodeURIComponent(process.cwd()));
@@ -16,9 +18,15 @@ const MEMORY_FILE = join(CACHE_FOLDER, "memory.txt");
 export const loadMemoryCache = () => loadFile(MEMORY_FILE);
 export const saveMemoryCache = (c: string) => saveFile(MEMORY_FILE, c);
 
-export function saveHistory(history: History): void {
+export async function saveHistory(history: History) {
+  await updateMemory(history);
   try {
-    fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2), "utf8");
+    fs.writeFileSync(
+      HISTORY_FILE,
+      // we only store recent data in cache, rest should be captured in memory
+      JSON.stringify(historyToData(history), null, 2),
+      "utf8",
+    );
   } catch (error) {
     console.error("Error saving history cache:", error);
   }
