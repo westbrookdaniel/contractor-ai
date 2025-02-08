@@ -18,6 +18,8 @@ export async function respond(history: History) {
           "Be concise for your written responses, and complete with your code responses.\n" +
           "Be helpful. Ask a follow up question.\n" +
           "\n" +
+          "The user has the ability to add files to your context if you request for them.\n" +
+          "\n" +
           "Here is some context about about this repository:\n" +
           loadMemoryCache(),
       },
