@@ -64,7 +64,7 @@ export async function pickFiles(files: string[], maxLines = 20) {
 
     // Render info lines at the bottom
     printLine(
-      `Arrow keys to navigate, [space] to select, [enter] to submit`,
+      `Arrows to navigate, [space] to select, [enter] to submit, [esc] to cancel`,
       Color.Gray,
     );
     printLine(`${selected.size} selected`, Color.Gray);
@@ -112,6 +112,12 @@ export async function pickFiles(files: string[], maxLines = 20) {
               renderList(items);
             }
             break;
+
+          case "\u001b": // Escape
+            process.stdin.setRawMode(false);
+            process.stdin.pause();
+            resolve([]);
+            return;
 
           case "\r": // Enter
             process.stdin.setRawMode(false);

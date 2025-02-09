@@ -4,6 +4,12 @@ import fs from "fs";
 import { pickFiles } from "../files";
 
 export async function addFiles(history: History, changedFiles: Set<string>) {
+  if (!changedFiles.size) {
+    printLine("\nNo recently changed files", Color.Gray);
+    history.push({ type: "action", action: "prompt" });
+    return;
+  }
+
   printLine(
     formatPrompt("Select recently changed files to add to context"),
     Color.Green,
@@ -17,15 +23,7 @@ export async function addFiles(history: History, changedFiles: Set<string>) {
   }
 
   history.push(
-    {
-      type: "data",
-      role: "user",
-      content: JSON.stringify(fileContents),
-    },
-    {
-      type: "action",
-      // a semi sensible default
-      action: "prompt",
-    },
+    { type: "data", role: "user", content: JSON.stringify(fileContents) },
+    { type: "action", action: "prompt" },
   );
 }
