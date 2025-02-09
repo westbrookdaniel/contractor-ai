@@ -9,5 +9,5 @@ export function clear(history: History) {
   history.length = 0;
   clearConsole();
   printLine();
-  printLine("Cleared Cached", Color.Gray);
+  printLine("History and cache cleared", Color.Gray);
 }

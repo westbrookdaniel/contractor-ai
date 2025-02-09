@@ -39,7 +39,7 @@ export async function printStream<T extends ToolSet>(
       process.stdout.write(
         `\n${
           part.result.success ? Color.Gray : Color.Red
-        }${part.result.message}${Color.Reset}\n\n`,
+        }${part.result.message}${Color.Reset}\n`,
       );
     }
   }
