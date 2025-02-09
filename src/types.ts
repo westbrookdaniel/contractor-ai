@@ -12,11 +12,16 @@ export type DataHistory = {
 
 export type ActionHistory = {
   type: "action";
-  action: Action | ManualAction;
+  action: Action | Action;
 };
 
 export type History = (MessageHistory | DataHistory | ActionHistory)[];
 
-export type Action = "prompt" | "edit" | "respond";
-// We never want an AI to be able to initiate these actions
-export type ManualAction = "clear" | "help" | "addFiles" | "memory";
+export type Action =
+  | "prompt"
+  | "edit"
+  | "discuss"
+  | "clear"
+  | "help"
+  | "addFiles"
+  | "memory";

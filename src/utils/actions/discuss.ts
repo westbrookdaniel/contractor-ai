@@ -5,7 +5,7 @@ import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
 import { loadMemoryCache } from "../cache";
 
-export async function respond(history: History, changedFiles: Set<string>) {
+export async function discuss(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
 
   const result = streamText({

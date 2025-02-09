@@ -1,13 +1,13 @@
 import { clearConsole, printDivider, printLine } from "./utils/io";
 import { prompt } from "./utils/actions/prompt";
-import { determineAction } from "./utils/conversation";
-import { respond } from "./utils/actions/respond";
+import { discuss } from "./utils/actions/discuss";
 import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/cache";
 import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
 import { memory } from "./utils/actions/memory";
 import { startFileWatcher } from "./utils/watcher";
+import { determineAction } from "./utils/determine";
 
 async function main(): Promise<void> {
   clearConsole();
@@ -30,14 +30,14 @@ async function main(): Promise<void> {
   });
 
   while (true) {
-    const action = await determineAction(history);
+    const action = determineAction(history);
 
     switch (action) {
       case "prompt":
         await prompt(history);
         break;
-      case "respond":
-        await respond(history, changedFiles);
+      case "discuss":
+        await discuss(history, changedFiles);
         await saveHistory(history);
         break;
       case "edit":
