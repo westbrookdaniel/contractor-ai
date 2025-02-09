@@ -53,7 +53,10 @@ async function main(): Promise<void> {
         break;
     }
 
-    await saveHistory(history, { condense: action === "edit" });
+    await saveHistory(history, {
+      updateMemory: action === "discuss" || action === "edit",
+      condense: action === "edit",
+    });
   }
 }
 
