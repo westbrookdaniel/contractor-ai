@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { z } from "zod";
 import { GIT_ROOT } from "../files";
+import { loadRepoMap } from "../cache";
 
 export const readFile = tool({
   description: "Read text content from a file",
@@ -13,10 +14,14 @@ export const readFile = tool({
     try {
       const filePath = path.resolve(GIT_ROOT, fileName);
       const content = await fs.promises.readFile(filePath, "utf-8");
+      const repoMap = loadRepoMap();
+      const graphInfo = repoMap[fileName] || null;
+
       return {
         success: true,
         message: `Read ${path.relative(GIT_ROOT, fileName)}`,
         content,
+        graphInfo,
       };
     } catch (error: any) {
       return {
@@ -27,4 +32,3 @@ export const readFile = tool({
     }
   },
 });
-

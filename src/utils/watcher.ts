@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import { findGitRoot } from "./files";
+import { processFile } from "./repo";
 
 export function startFileWatcher() {
   const root = findGitRoot(process.cwd());
@@ -11,12 +12,13 @@ export function startFileWatcher() {
     if (filename) {
       if (filename.startsWith(".git")) return;
       const absolutePath = `${root}/${filename}`;
-      fs.stat(absolutePath, (err, stats) => {
+      fs.stat(absolutePath, async (err, stats) => {
         if (err) return;
         if (stats.isFile()) {
-          fs.readFile(absolutePath, "utf-8", (err) => {
+          fs.readFile(absolutePath, "utf-8", async (err) => {
             if (err) return;
             changedFiles.add(absolutePath);
+            void processFile(absolutePath);
           });
         }
       });

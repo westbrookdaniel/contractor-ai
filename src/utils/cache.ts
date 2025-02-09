@@ -4,6 +4,7 @@ import { join } from "path";
 import { homedir } from "os";
 import { updateMemory } from "./memory";
 import { condenseHistory, historyToData } from "./conversation";
+import type { RepoMapSummary } from "./repo";
 
 const CACHE_FOLDER = join(homedir(), ".config", "contractor-ai");
 const DIR_CACHE = join(CACHE_FOLDER, encodeURIComponent(process.cwd()));
@@ -14,9 +15,25 @@ if (!fs.existsSync(DIR_CACHE)) {
 
 export const HISTORY_FILE = join(CACHE_FOLDER, "history.json");
 export const MEMORY_FILE = join(CACHE_FOLDER, "memory.txt");
+export const REPO_FILE = join(CACHE_FOLDER, "repo.json");
 
 export const loadMemoryCache = () => loadFile(MEMORY_FILE);
 export const saveMemoryCache = (c: string) => saveFile(MEMORY_FILE, c);
+
+export const loadRepoMap = (): Record<string, RepoMapSummary> => {
+  try {
+    if (fs.existsSync(REPO_FILE)) {
+      const data = fs.readFileSync(REPO_FILE, "utf8");
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error("Error loading repo map:", error);
+  }
+  return {};
+};
+
+export const saveRepoMap = (repoMap: any) =>
+  saveFile(REPO_FILE, JSON.stringify(repoMap));
 
 export async function saveHistory(
   history: History,
