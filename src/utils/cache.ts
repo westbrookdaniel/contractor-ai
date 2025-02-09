@@ -12,8 +12,8 @@ if (!fs.existsSync(DIR_CACHE)) {
   fs.mkdirSync(DIR_CACHE, { recursive: true });
 }
 
-const HISTORY_FILE = join(CACHE_FOLDER, "history.json");
-const MEMORY_FILE = join(CACHE_FOLDER, "memory.txt");
+export const HISTORY_FILE = join(CACHE_FOLDER, "history.json");
+export const MEMORY_FILE = join(CACHE_FOLDER, "memory.txt");
 
 export const loadMemoryCache = () => loadFile(MEMORY_FILE);
 export const saveMemoryCache = (c: string) => saveFile(MEMORY_FILE, c);
@@ -49,11 +49,6 @@ export function loadHistory(): History {
     }
   }
   return [{ type: "action", action: "prompt" }];
-}
-
-export function clearCache() {
-  fs.existsSync(HISTORY_FILE) && fs.rmSync(HISTORY_FILE);
-  fs.existsSync(MEMORY_FILE) && fs.rmSync(MEMORY_FILE);
 }
 
 function loadFile(file: string) {

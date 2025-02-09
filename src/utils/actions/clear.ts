@@ -1,11 +1,13 @@
+import fs from "fs";
 import type { History } from "../../types";
-import { clearCache } from "../cache";
+import { HISTORY_FILE, MEMORY_FILE } from "../cache";
 import { clearConsole, Color, printLine } from "../io";
 
 export function clear(history: History) {
-  clearCache();
+  fs.existsSync(HISTORY_FILE) && fs.rmSync(HISTORY_FILE);
+  fs.existsSync(MEMORY_FILE) && fs.rmSync(MEMORY_FILE);
   history.length = 0;
   clearConsole();
   printLine();
-  printLine("Cleared History", Color.Gray);
+  printLine("Cleared Cached", Color.Gray);
 }
