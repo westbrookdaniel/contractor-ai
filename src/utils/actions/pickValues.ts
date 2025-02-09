@@ -1,12 +1,12 @@
 import { clearLines, Color, printLine } from "../io";
 import readline from "readline";
 
-export async function pickValues<T>(
-  values: T[],
-  getLabel: (value: T) => string,
+export async function pickValues(
+  values: string[],
+  getLabel: (value: string) => string,
   maxLines: number = 20,
-): Promise<T[]> {
-  let selected = new Set<T>();
+): Promise<string[]> {
+  let selected = new Set<string>();
   let cursor = 0;
   let offset = 0;
 
@@ -59,7 +59,7 @@ export async function pickValues<T>(
     printLine(`${selected.size} selected`, Color.Gray);
   }
 
-  const selectedValues = await new Promise<T[]>(async (resolve) => {
+  const selectedValues = await new Promise<string[]>(async (resolve) => {
     async function handleInput() {
       const items = await listValues();
 

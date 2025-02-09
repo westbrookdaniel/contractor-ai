@@ -43,7 +43,7 @@ async function main(): Promise<void> {
         await edit(history, changedFiles);
         break;
       case "clear":
-        clear(history);
+        await clear(history);
         break;
       case "memory":
         memory(history);
