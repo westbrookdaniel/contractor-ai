@@ -18,9 +18,12 @@ const MEMORY_FILE = join(CACHE_FOLDER, "memory.txt");
 export const loadMemoryCache = () => loadFile(MEMORY_FILE);
 export const saveMemoryCache = (c: string) => saveFile(MEMORY_FILE, c);
 
-export async function saveHistory(history: History) {
+export async function saveHistory(
+  history: History,
+  opts?: { condense?: boolean },
+) {
   await updateMemory(history);
-  condenseHistory(history);
+  if (opts?.condense) condenseHistory(history);
   try {
     fs.writeFileSync(
       HISTORY_FILE,

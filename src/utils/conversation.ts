@@ -20,7 +20,7 @@ export function historyToMessages(history: History, count = MAX_MESSAGES) {
 export function condenseHistory(history: History) {
   const next = history.filter((h) => h.type !== "data");
   if (next.length !== history.length) {
-    printLine("\nCondensing History", Color.Gray);
+    printLine("\nConensing history by removing added files", Color.Gray);
     history.splice(0, history.length, ...next);
   }
 }

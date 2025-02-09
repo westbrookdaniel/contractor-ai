@@ -27,7 +27,7 @@ export const writeToFile = tool({
       await fs.promises.writeFile(fileName, content, { flag: "w" });
       return {
         success: true,
-        message: `+${path.resolve(GIT_ROOT, fileName)}`,
+        message: `+${path.relative(GIT_ROOT, fileName)}`,
       };
     } catch (error: any) {
       return {

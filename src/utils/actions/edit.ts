@@ -5,6 +5,7 @@ import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
 import { writeToFile } from "../tools/writeToFile";
 import { loadMemoryCache } from "../cache";
+import { readFile } from "../tools/readFile";
 
 export async function edit(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
@@ -14,23 +15,25 @@ export async function edit(history: History, changedFiles: Set<string>) {
     messages: [
       {
         role: "system",
-        content:
-          "You are a senior contractor software engineer\n" +
-          "Be concise for your written responses, and complete with your code responses.\n" +
-          "Don't tell me what the changes were, I can look in the files you write in to see that.\n" +
-          "\n" +
-          "Here is some context about about this repository:\n" +
-          loadMemoryCache() +
-          "\n\n" +
-          "And here are files the user has changed recently:\n" +
-          [...changedFiles].join("\n"),
+        content: `
+          You are a senior contractor software engineer.
+          Be concise for your written responses, and complete with your code responses.
+          Don't tell me what the changes were, I can look in the files you write in to see that.
+
+          Before writing to a file, always read its current content using the readFile tool 
+          to understand the existing context and avoid overwriting important information.
+          
+          Here is some context about about this repository:
+          ${loadMemoryCache()}
+
+          Here are files the user has changed recently:
+          ${[...changedFiles].join("\n")}
+        `,
       },
       ...historyToMessages(history),
     ],
-    // TODO make AI always try to get contents of a file before it writes to it
-    // add new tool getFileContents and then update content to make it
-    tools: { writeToFile },
-    maxSteps: 5, // max 5 actions
+    tools: { writeToFile, readFile },
+    maxSteps: 10,
   });
 
   await printStream(result);

@@ -38,11 +38,9 @@ async function main(): Promise<void> {
         break;
       case "discuss":
         await discuss(history, changedFiles);
-        await saveHistory(history);
         break;
       case "edit":
         await edit(history, changedFiles);
-        await saveHistory(history);
         break;
       case "clear":
         clear(history);
@@ -54,6 +52,8 @@ async function main(): Promise<void> {
         await addFiles(history, changedFiles);
         break;
     }
+
+    await saveHistory(history, { condense: action === "edit" });
   }
 }
 

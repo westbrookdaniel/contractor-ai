@@ -4,6 +4,7 @@ import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
 import { loadMemoryCache } from "../cache";
+import { readFile } from "../tools/readFile";
 
 export async function discuss(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
@@ -13,21 +14,26 @@ export async function discuss(history: History, changedFiles: Set<string>) {
     messages: [
       {
         role: "system",
-        content:
-          "You are a senior contractor software engineer\n" +
-          "Be concise for your written responses, and complete with your code responses.\n" +
-          "Be helpful. Ask a follow up question.\n" +
-          "\n" +
-          "The user has the ability to add files to your context if you request for them.\n" +
-          "\n" +
-          "Here is some context about about this repository:\n" +
-          loadMemoryCache() +
-          "\n\n" +
-          "And here are files the user has changed recently:\n" +
-          [...changedFiles].join("\n"),
+        content: `
+          You are a reasoning model. Your purpose is to think step by step.
+          Now, think step by step for the following question. Only output your reasoning.
+          Be thorough and consider the users intentions and all possible outcomes.
+          Interject with wait if you think you may have come across a useful thought.
+
+          Be helpful. Ask a follow up question.
+          The user has the ability to apply edits when they decide they are ready.
+
+          Here is some context about about this repository:
+          ${loadMemoryCache()}
+
+          Here are files the user has changed recently:
+          ${[...changedFiles].join("\n")}
+        `,
       },
       ...historyToMessages(history),
     ],
+    tools: { readFile },
+    maxSteps: 10,
   });
 
   await printStream(result);
