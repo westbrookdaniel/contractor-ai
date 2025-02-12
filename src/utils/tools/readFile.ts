@@ -5,6 +5,7 @@ import { z } from "zod";
 import { GIT_ROOT } from "../files";
 import { loadRepoMap } from "../cache";
 import { safelyNormalizePath } from "../safety";
+import { processFile } from "../repo";
 
 export const readFile = tool({
   description: "Read text content from a file",
@@ -16,7 +17,7 @@ export const readFile = tool({
       const filePath = safelyNormalizePath(fileName);
       const content = await fs.promises.readFile(filePath, "utf-8");
       const repoMap = loadRepoMap();
-      const graphInfo = repoMap[fileName] || null;
+      const graphInfo = repoMap[fileName] || (await processFile(fileName));
 
       return {
         success: true,
