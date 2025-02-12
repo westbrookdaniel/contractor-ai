@@ -38,25 +38,39 @@ async function summarizeFile(filePath: string): Promise<RepoMapSummary> {
   };
 }
 
+let queue: string[] = [];
+
+// absolutePath isn't actually absolute its relative to root
 export async function processFile(absolutePath: string) {
   const repoMap = loadRepoMap();
   const filePath = path.relative(GIT_ROOT, absolutePath);
 
   // if was last updated less than an hour ago skip
   const existing = repoMap[filePath];
-  if (!existing) return;
-  const lastUpdated = new Date(existing.graphLastUpdated);
-  const now = new Date();
-  const diff = now.getTime() - lastUpdated.getTime();
-  const diffHours = diff / (1000 * 60 * 60);
-  if (diffHours < 1) return;
+  if (existing) {
+    const lastUpdated = new Date(existing.graphLastUpdated);
+    const now = new Date();
+    const diff = now.getTime() - lastUpdated.getTime();
+    const diffHours = diff / (1000 * 60 * 60);
+    if (diffHours < 1) return existing;
+  }
+
+  // TODO if in queue should wait for that one and take its result
+  if (queue.includes(filePath)) {
+    return existing ?? null;
+  }
+  queue.push(filePath);
 
   try {
     const summary = await summarizeFile(absolutePath);
     repoMap[filePath] = summary;
     saveRepoMap(repoMap);
-    printLine(`Reprocessed ${filePath}`, Color.Gray);
+    queue = queue.filter((q) => q !== filePath);
+    return summary;
   } catch (error) {
     console.error(`Error processing ${filePath}:`, error);
   }
+
+  queue = queue.filter((q) => q !== filePath);
+  return null;
 }

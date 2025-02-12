@@ -5,6 +5,7 @@ import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
 import { loadMemoryCache } from "../cache";
 import { readFile } from "../tools/readFile";
+import { readFilesInDir } from "../tools/readFilesInDir";
 
 export async function discuss(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
@@ -28,11 +29,17 @@ export async function discuss(history: History, changedFiles: Set<string>) {
 
           Here are some files that have been modified recently:
           ${[...changedFiles].slice(-10).join("\n")}
+
+          If you want to look for more files use the readFilesInDir tool to discover
+          more parts of the repository, including other directories to traverse or files
+          to read. You are a part of an existing repository so if the user is refering to things
+          you aren't sure about try and look for them in existing relevant files, or
+          ask the user for more information about where to find them.
         `,
       },
       ...historyToMessages(history),
     ],
-    tools: { readFile },
+    tools: { readFile, readFilesInDir },
     maxSteps: 10,
   });
 

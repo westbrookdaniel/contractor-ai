@@ -14,6 +14,7 @@ export function findGitRoot(initialPath: string): string {
   }
 }
 
+// TODO CWD HERE IS WRONG
 export const GIT_ROOT = findGitRoot(process.cwd());
 
 export async function pickFiles(files: string[], maxLines = 20) {

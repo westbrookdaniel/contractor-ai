@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { z } from "zod";
 import { GIT_ROOT } from "../files";
+import { safelyNormalizePath } from "../safety";
 
 export const writeToFile = tool({
   description: "Write text content to a file",
@@ -14,7 +15,8 @@ export const writeToFile = tool({
         "Content to write to the file. Must be the complete contents of the file",
       ),
   }),
-  execute: async ({ fileName, content }) => {
+  execute: async ({ fileName: unsafe, content }) => {
+    const fileName = safelyNormalizePath(unsafe);
     try {
       // Check if folder exists and create if not
       const folderPath = path.dirname(fileName);

@@ -11,7 +11,6 @@ const actionHelp: Record<Action, string> = {
   addFiles: "File selector to add file contents to history",
   memory: "Print out the cached memory contents",
   discuss: "AI designed to provide help and converse (default)",
-  // TODO handler hsould have a porompt thing as a part of it
   edit: "AI with the capability to edit and create files",
 };
 
