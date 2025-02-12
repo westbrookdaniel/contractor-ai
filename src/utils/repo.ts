@@ -5,7 +5,7 @@ import { z } from "zod";
 import { generateObject } from "ai";
 import fs from "fs";
 import { loadRepoMap, saveRepoMap } from "./cache";
-import { Color, printLine } from "./io";
+import ignore from "ignore";
 
 export type RepoMapSummary = {
   imports: string[];
@@ -45,6 +45,10 @@ export async function processFile(absolutePath: string) {
   const repoMap = loadRepoMap();
   const filePath = path.relative(GIT_ROOT, absolutePath);
 
+  if (gitignore.ignores(filePath)) {
+    return; // Skip the file if it's ignored
+  }
+
   // if was last updated less than an hour ago skip
   const existing = repoMap[filePath];
   if (existing) {
@@ -74,3 +78,16 @@ export async function processFile(absolutePath: string) {
   queue = queue.filter((q) => q !== filePath);
   return null;
 }
+
+function parseGitIgnore() {
+  const gitignorePath = path.join(GIT_ROOT, ".gitignore");
+  if (!fs.existsSync(gitignorePath)) {
+    return { ignores: () => false };
+  }
+  const gitignoreContents = fs.readFileSync(gitignorePath, "utf-8");
+  const ig = ignore();
+  ig.add(gitignoreContents);
+  return ig;
+}
+
+const gitignore = parseGitIgnore();

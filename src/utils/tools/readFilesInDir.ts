@@ -6,6 +6,7 @@ import { GIT_ROOT } from "../files";
 import { loadRepoMap } from "../cache";
 import { safelyNormalizePath } from "../safety";
 import { processFile, type RepoMapSummary } from "../repo";
+import { Color, printLine } from "../io";
 
 export const readFilesInDir = tool({
   description: "Get a summary for all the files in a directory",
@@ -18,11 +19,34 @@ export const readFilesInDir = tool({
       const repoMap = loadRepoMap();
       const fileNames = await fs.promises.readdir(directoryName, "utf-8");
 
-      const graphInfoMap: Record<string, RepoMapSummary> = {};
+      const graphInfoMap: Record<
+        string,
+        { summary: RepoMapSummary | null; isDir: boolean }
+      > = {};
       for (const unsafeFile of fileNames) {
-        const fileName = safelyNormalizePath(unsafeFile);
-        graphInfoMap[fileName] =
-          repoMap[fileName] || (await processFile(fileName));
+        const fileName = safelyNormalizePath(
+          path.join(directoryName, unsafeFile),
+        );
+
+        if (fs.statSync(fileName).isDirectory()) {
+          printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
+          graphInfoMap[fileName] = { summary: null, isDir: true };
+        } else {
+          const existing = repoMap[fileName];
+          if (existing) {
+            printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
+            graphInfoMap[fileName] = { summary: existing, isDir: false };
+          } else {
+            printLine(
+              `Processing ${path.relative(GIT_ROOT, fileName)}`,
+              Color.Gray,
+            );
+            graphInfoMap[fileName] = {
+              summary: (await processFile(fileName)) ?? null,
+              isDir: false,
+            };
+          }
+        }
       }
 
       return {
