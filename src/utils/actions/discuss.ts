@@ -26,8 +26,8 @@ export async function discuss(history: History, changedFiles: Set<string>) {
           Here is some context about about this repository:
           ${loadMemoryCache()}
 
-          Here are files the user has changed recently:
-          ${[...changedFiles].join("\n")}
+          Here are some files that have been modified recently:
+          ${[...changedFiles].slice(-10).join("\n")}
         `,
       },
       ...historyToMessages(history),

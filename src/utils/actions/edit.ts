@@ -27,7 +27,7 @@ export async function edit(history: History, changedFiles: Set<string>) {
           ${loadMemoryCache()}
 
           Here are files the user has changed recently:
-          ${[...changedFiles].join("\n")}
+          ${[...changedFiles].slice(-10).join("\n")}
         `,
       },
       ...historyToMessages(history),
