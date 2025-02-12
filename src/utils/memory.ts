@@ -36,6 +36,8 @@ export async function updateMemory(history: History) {
 
         This memory should serve the purpose of providing information about the
         repository and global context that would assist in future actions.
+
+        Do not make the memory goal orientated. The goals of the user will change over time.
     `,
   });
 
