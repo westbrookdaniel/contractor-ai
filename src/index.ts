@@ -40,7 +40,7 @@ async function main(): Promise<void> {
         await discuss(history, changedFiles);
         break;
       case "edit":
-        await edit(history, changedFiles);
+        await edit(history);
         break;
       case "clear":
         await clear(history);

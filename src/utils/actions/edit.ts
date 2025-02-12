@@ -6,9 +6,8 @@ import { model } from "../model";
 import { writeToFile } from "../tools/writeToFile";
 import { loadMemoryCache } from "../cache";
 import { readFile } from "../tools/readFile";
-import { readFilesInDir } from "../tools/readFilesInDir";
 
-export async function edit(history: History, changedFiles: Set<string>) {
+export async function edit(history: History) {
   printLine("\n* Contractor:", Color.Blue);
 
   const result = streamText({
@@ -26,20 +25,11 @@ export async function edit(history: History, changedFiles: Set<string>) {
           
           Here is some context about about this repository:
           ${loadMemoryCache()}
-
-          Here are some files that have been modified recently:
-          ${[...changedFiles].slice(-10).join("\n")}
-
-          If you want to look for more files use the readFilesInDir tool to discover
-          more parts of the repository, including other directories to traverse or files
-          to read. You are a part of an existing repository so if the user is refering to things
-          you aren't sure about try and look for them in existing relevant files, or
-          ask the user for more information about where to find them.
         `,
       },
       ...historyToMessages(history),
     ],
-    tools: { writeToFile, readFile, readFilesInDir },
+    tools: { writeToFile, readFile },
     maxSteps: 10,
   });
 
