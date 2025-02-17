@@ -19,7 +19,6 @@ export type History = (MessageHistory | DataHistory | ActionHistory)[];
 
 export type Action =
   | "prompt"
-  | "edit"
   | "discuss"
   | "clear"
   | "help"

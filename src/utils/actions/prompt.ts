@@ -2,7 +2,7 @@ import type { History, Action } from "../../types";
 import { Color, printLine, requestInput } from "../io";
 import { execSync } from "child_process";
 
-const withMessage: Action[] = ["discuss", "edit"];
+const withMessage: Action[] = ["discuss"];
 
 const actionHelp: Record<Action, string> = {
   help: "Print out help for all actions",
@@ -11,7 +11,6 @@ const actionHelp: Record<Action, string> = {
   addFiles: "File selector to add file contents to history",
   memory: "Print out the cached memory contents",
   discuss: "AI designed to provide help and converse (default)",
-  edit: "AI with the capability to edit and create files",
 };
 
 export async function prompt(history: History) {

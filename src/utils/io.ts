@@ -18,6 +18,7 @@ export enum Color {
   Cyan = "\x1b[36m",
   White = "\x1b[37m",
   Gray = "\x1b[90m",
+  DarkGray = "\x1b[30m",
   Reset = "\x1b[0m",
 }
 
@@ -37,7 +38,7 @@ export async function printStream<T extends ToolSet>(
     }
     if (part.type === "tool-result") {
       process.stdout.write(
-        `\n${
+        `${
           part.result.success ? Color.Gray : Color.Red
         }${part.result.message}${Color.Reset}\n`,
       );

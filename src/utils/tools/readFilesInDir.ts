@@ -19,6 +19,11 @@ export const readFilesInDir = tool({
       const repoMap = loadRepoMap();
       const fileNames = await fs.promises.readdir(directoryName, "utf-8");
 
+      printLine(
+        `Searching ${path.relative(GIT_ROOT, directoryName)}`,
+        Color.DarkGray,
+      );
+
       const graphInfoMap: Record<
         string,
         { summary: RepoMapSummary | null; isDir: boolean }
@@ -29,17 +34,23 @@ export const readFilesInDir = tool({
         );
 
         if (fs.statSync(fileName).isDirectory()) {
-          printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
+          printLine(
+            `Found ${path.relative(GIT_ROOT, fileName)}`,
+            Color.DarkGray,
+          );
           graphInfoMap[fileName] = { summary: null, isDir: true };
         } else {
           const existing = repoMap[fileName];
           if (existing) {
-            printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
+            printLine(
+              `Found ${path.relative(GIT_ROOT, fileName)}`,
+              Color.DarkGray,
+            );
             graphInfoMap[fileName] = { summary: existing, isDir: false };
           } else {
             printLine(
               `Processing ${path.relative(GIT_ROOT, fileName)}`,
-              Color.Gray,
+              Color.DarkGray,
             );
             graphInfoMap[fileName] = {
               summary: (await processFile(fileName)) ?? null,

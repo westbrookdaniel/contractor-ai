@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import type { History } from "../../types";
+import type { History, MessageHistory } from "../../types";
 import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
 import { model } from "../model";
@@ -23,6 +23,12 @@ export async function discuss(history: History, changedFiles: Set<string>) {
   });
 
   await printStream(summary);
+
+  history.push({
+    type: "message",
+    role: "assistant",
+    content: await summary.text,
+  });
 
   const actions = streamText({
     model: model,
@@ -56,30 +62,17 @@ export async function discuss(history: History, changedFiles: Set<string>) {
       ...historyToMessages(history),
     ],
     tools: { writeToFile, readFile, readFilesInDir },
-    maxSteps: 20,
+    maxSteps: 10,
     toolChoice: "required",
   });
 
   await printStream(actions);
 
-  const summaryText = await summary.text;
   const actionsText = await actions.text; // this should be "" but just in case
-  const response = summaryText + actionsText;
 
   printLine();
 
-  if (response.trim() === "") {
-    history.push({
-      type: "message",
-      role: "assistant",
-      content:
-        "<thought>I completed the task but there was was no further communication required</thought>",
-    });
-  } else {
-    history.push({
-      type: "message",
-      role: "assistant",
-      content: response,
-    });
-  }
+  const summaryHistory = history.pop() as MessageHistory;
+  summaryHistory.content += actionsText;
+  history.push(summaryHistory);
 }

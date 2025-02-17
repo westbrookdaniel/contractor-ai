@@ -3,7 +3,6 @@ import { prompt } from "./utils/actions/prompt";
 import { discuss } from "./utils/actions/discuss";
 import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/cache";
-import { edit } from "./utils/actions/edit";
 import { clear } from "./utils/actions/clear";
 import { memory } from "./utils/actions/memory";
 import { startFileWatcher } from "./utils/watcher";
@@ -39,9 +38,6 @@ async function main(): Promise<void> {
       case "discuss":
         await discuss(history, changedFiles);
         break;
-      case "edit":
-        await edit(history);
-        break;
       case "clear":
         await clear(history);
         break;
@@ -54,8 +50,8 @@ async function main(): Promise<void> {
     }
 
     await saveHistory(history, {
-      updateMemory: action === "discuss" || action === "edit",
-      condense: action === "edit",
+      updateMemory: action === "discuss",
+      // condense: true, not used anymore
     });
   }
 }

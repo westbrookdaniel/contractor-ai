@@ -34,7 +34,7 @@ export const writeToFile = tool({
 
       return {
         success: true,
-        message: `+${path.relative(GIT_ROOT, fileName)}`,
+        message: `Wrote ${path.relative(GIT_ROOT, fileName)}`,
       };
     } catch (error: any) {
       return {
