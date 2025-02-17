@@ -41,7 +41,7 @@ export async function discuss(history: History, changedFiles: Set<string>) {
         role: "system",
         content: `You are a tool usage estimation agent in a pipeline. Estimate how many tool usages the next ai agent
         will require to complete their task. The tools they have are: writeToFile, readFile, readFilesInDir.
-        Choose a number between 0 and 30.`,
+        Choose a number between 0 and 30. Account for every time a file is going to be written it must read it first.`,
       },
       ...historyToMessages(history),
     ],
