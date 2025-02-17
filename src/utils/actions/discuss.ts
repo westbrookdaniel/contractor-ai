@@ -62,7 +62,7 @@ export async function discuss(history: History, changedFiles: Set<string>) {
       ...historyToMessages(history),
     ],
     tools: { writeToFile, readFile, readFilesInDir },
-    maxSteps: 10,
+    maxSteps: 20,
     toolChoice: "required",
   });
 

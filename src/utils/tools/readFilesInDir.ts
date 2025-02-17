@@ -21,7 +21,7 @@ export const readFilesInDir = tool({
 
       printLine(
         `Searching ${path.relative(GIT_ROOT, directoryName)}`,
-        Color.DarkGray,
+        Color.Gray,
       );
 
       const graphInfoMap: Record<
@@ -36,7 +36,7 @@ export const readFilesInDir = tool({
         if (fs.statSync(fileName).isDirectory()) {
           printLine(
             `Found ${path.relative(GIT_ROOT, fileName)}`,
-            Color.DarkGray,
+            Color.Gray,
           );
           graphInfoMap[fileName] = { summary: null, isDir: true };
         } else {
@@ -44,13 +44,13 @@ export const readFilesInDir = tool({
           if (existing) {
             printLine(
               `Found ${path.relative(GIT_ROOT, fileName)}`,
-              Color.DarkGray,
+              Color.Gray,
             );
             graphInfoMap[fileName] = { summary: existing, isDir: false };
           } else {
             printLine(
               `Processing ${path.relative(GIT_ROOT, fileName)}`,
-              Color.DarkGray,
+              Color.Gray,
             );
             graphInfoMap[fileName] = {
               summary: (await processFile(fileName)) ?? null,
