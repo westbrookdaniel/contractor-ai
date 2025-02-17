@@ -3,9 +3,7 @@ import fs from "fs";
 import path from "path";
 import { z } from "zod";
 import { GIT_ROOT } from "../files";
-import { loadRepoMap } from "../cache";
 import { safelyNormalizePath } from "../safety";
-import { processFile, type RepoMapSummary } from "../repo";
 import { Color, printLine } from "../io";
 
 export const readFilesInDir = tool({
@@ -16,7 +14,6 @@ export const readFilesInDir = tool({
   execute: async ({ directoryName: unsafe }) => {
     const directoryName = safelyNormalizePath(unsafe);
     try {
-      const repoMap = loadRepoMap();
       const fileNames = await fs.promises.readdir(directoryName, "utf-8");
 
       printLine(
@@ -24,9 +21,9 @@ export const readFilesInDir = tool({
         Color.Gray,
       );
 
-      const graphInfoMap: Record<
+      const fileMap: Record<
         string,
-        { summary: RepoMapSummary | null; isDir: boolean }
+        { contents: string | null; isDir: boolean }
       > = {};
       for (const unsafeFile of fileNames) {
         const fileName = safelyNormalizePath(
@@ -34,36 +31,21 @@ export const readFilesInDir = tool({
         );
 
         if (fs.statSync(fileName).isDirectory()) {
-          printLine(
-            `Found ${path.relative(GIT_ROOT, fileName)}`,
-            Color.Gray,
-          );
-          graphInfoMap[fileName] = { summary: null, isDir: true };
+          // printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
+          fileMap[fileName] = { contents: null, isDir: true };
         } else {
-          const existing = repoMap[fileName];
-          if (existing) {
-            printLine(
-              `Found ${path.relative(GIT_ROOT, fileName)}`,
-              Color.Gray,
-            );
-            graphInfoMap[fileName] = { summary: existing, isDir: false };
-          } else {
-            printLine(
-              `Processing ${path.relative(GIT_ROOT, fileName)}`,
-              Color.Gray,
-            );
-            graphInfoMap[fileName] = {
-              summary: (await processFile(fileName)) ?? null,
-              isDir: false,
-            };
-          }
+          // printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
+          fileMap[fileName] = {
+            contents: fs.readFileSync(fileName, "utf-8"),
+            isDir: false,
+          };
         }
       }
 
       return {
         success: true,
-        message: `Summarised ${path.relative(GIT_ROOT, directoryName)}`,
-        graphInfoMap,
+        message: `Searched ${path.relative(GIT_ROOT, directoryName)}`,
+        graphInfoMap: fileMap,
       };
     } catch (error: any) {
       return {

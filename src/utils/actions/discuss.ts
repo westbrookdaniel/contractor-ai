@@ -53,10 +53,8 @@ export async function discuss(history: History, changedFiles: Set<string>) {
           Perform the task by thinking step by step make the code changes.
 
           You have the experience of a senior contractor software engineer.
-          Be concise for your written responses, and complete with your code responses. Conform to the codebase.
-
-          Before writing to a file, always read its current content using the readFile tool 
-          to understand the existing context and avoid overwriting important information.
+          Be concise for your written responses, and complete with your code responses.
+          Conform to the existing codebase.
 
           ${loadMemoryCache()}
 
