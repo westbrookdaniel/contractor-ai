@@ -18,10 +18,7 @@ export async function discuss(history: History, changedFiles: Set<string>) {
       {
         role: "system",
         content: `
-          You are a reasoning model. Your purpose is to think step by step.
-          Now, think step by step for the following question.
-          Be thorough and consider the users intentions and all possible outcomes.
-          Interject with wait if you think you may have come across a useful thought.
+          Think step by step for the following question.
 
           ${loadMemoryCache()}
 
@@ -61,16 +58,21 @@ export async function discuss(history: History, changedFiles: Set<string>) {
 
   const maxStepsEstimate = (await estimation).object.maxSteps;
 
+  printLine(); // lil spacer
+
+  printLine(
+    "Estimated to complete in " + maxStepsEstimate + " steps",
+    Color.Cyan,
+  ); // lil spacer
+  printLine(); // lil spacer
+
   const actions = streamText({
     model: model,
     messages: [
       {
         role: "system",
         content: `
-          You are a reasoning model. Your purpose is to think step by step.
-          Now, think step by step for the following question.
-          Be thorough and consider the users intentions and all possible outcomes.
-          Interject with wait if you think you may have come across a useful thought.
+          Perform the task by thinking step by step make the code changes.
 
           You have the experience of a senior contractor software engineer.
           Be concise for your written responses, and complete with your code responses. Conform to the codebase.
