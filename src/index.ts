@@ -5,7 +5,6 @@ import { addFiles } from "./utils/actions/addFiles";
 import { loadHistory, saveHistory } from "./utils/cache";
 import { clear } from "./utils/actions/clear";
 import { memory } from "./utils/actions/memory";
-import { startFileWatcher } from "./utils/watcher";
 import { determineAction } from "./utils/determine";
 
 async function main(): Promise<void> {
@@ -15,8 +14,6 @@ async function main(): Promise<void> {
   printLine("Hello. How can I help?");
 
   const history = loadHistory();
-
-  const changedFiles = startFileWatcher();
 
   // Set up exit handlers to save history
   process.on("SIGINT", () => {
@@ -36,7 +33,7 @@ async function main(): Promise<void> {
         await prompt(history);
         break;
       case "discuss":
-        await discuss(history, changedFiles);
+        await discuss(history);
         break;
       case "clear":
         await clear(history);
@@ -45,7 +42,7 @@ async function main(): Promise<void> {
         memory(history);
         break;
       case "addFiles":
-        await addFiles(history, changedFiles);
+        await addFiles(history);
         break;
     }
 

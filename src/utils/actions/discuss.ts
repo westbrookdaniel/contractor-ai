@@ -1,4 +1,4 @@
-import { generateObject, streamText } from "ai";
+import { streamText } from "ai";
 import type { History, MessageHistory } from "../../types";
 import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
@@ -7,9 +7,8 @@ import { loadMemoryCache } from "../cache";
 import { readFile } from "../tools/readFile";
 import { writeToFile } from "../tools/writeToFile";
 import { readFilesInDir } from "../tools/readFilesInDir";
-import { z } from "zod";
 
-export async function discuss(history: History, changedFiles: Set<string>) {
+export async function discuss(history: History) {
   printLine("\n* Contractor:", Color.Blue);
 
   const summary = streamText({
@@ -21,9 +20,6 @@ export async function discuss(history: History, changedFiles: Set<string>) {
           Think step by step for the following question.
 
           ${loadMemoryCache()}
-
-          Here are some files that have been modified recently:
-          ${[...changedFiles].slice(-10).join("\n")}
 
           You have the experience of a senior contractor software engineer.
           Be concise for your written responses, do not include any tools.
@@ -57,9 +53,6 @@ export async function discuss(history: History, changedFiles: Set<string>) {
           Conform to the existing codebase.
 
           ${loadMemoryCache()}
-
-          Here are some files that have been modified recently:
-          ${[...changedFiles].slice(-10).join("\n")}
 
           If you want to look for more files use the readFilesInDir tool to discover
           more parts of the repository, including other directories to traverse or files

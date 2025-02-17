@@ -42,7 +42,7 @@ export const readFilesInDir = tool({
     } catch (error: any) {
       return {
         success: false,
-        message: `Failed to summarise ${path.relative(GIT_ROOT, directoryName)}`,
+        message: `Failed to search ${path.relative(GIT_ROOT, directoryName)}`,
         content: `File not found or error reading file: ${error.message}`,
       };
     }
