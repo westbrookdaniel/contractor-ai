@@ -4,7 +4,6 @@ import path from "path";
 import { z } from "zod";
 import { GIT_ROOT } from "../files";
 import { safelyNormalizePath } from "../safety";
-import { Color, printLine } from "../io";
 
 export const readFilesInDir = tool({
   description: "Get a summary for all the files in a directory",
@@ -16,11 +15,6 @@ export const readFilesInDir = tool({
     try {
       const fileNames = await fs.promises.readdir(directoryName, "utf-8");
 
-      printLine(
-        `Searching ${path.relative(GIT_ROOT, directoryName)}`,
-        Color.Gray,
-      );
-
       const fileMap: Record<
         string,
         { contents: string | null; isDir: boolean }
@@ -31,10 +25,8 @@ export const readFilesInDir = tool({
         );
 
         if (fs.statSync(fileName).isDirectory()) {
-          // printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
           fileMap[fileName] = { contents: null, isDir: true };
         } else {
-          // printLine(`Found ${path.relative(GIT_ROOT, fileName)}`, Color.Gray);
           fileMap[fileName] = {
             contents: fs.readFileSync(fileName, "utf-8"),
             isDir: false,
