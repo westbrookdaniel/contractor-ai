@@ -60,6 +60,8 @@ export async function discuss(history: History) {
           you aren't sure about try and look for them in existing relevant files, or
           ask the user for more information about where to find them.
         `,
+        // TODO break up input and fuzzy search (NO AI) through all file names in repo to find relevant subsets
+        // for the ai to start serching fro[m with readFilesInDir etc. also try and find the entry point to the app
       },
       ...historyToMessages(history),
     ],
