@@ -17,8 +17,21 @@ export async function discuss(history: History, changedFiles: Set<string>) {
     messages: [
       {
         role: "system",
-        content: `You are a summariser agent in a pipeline. Summarise how the next agent which can perform a number of tool usages
-        to interact with the codebase. Very briefly respond. Keep it very short and do not use code. 100 words max.`,
+        content: `
+          You are a reasoning model. Your purpose is to think step by step.
+          Now, think step by step for the following question.
+          Be thorough and consider the users intentions and all possible outcomes.
+          Interject with wait if you think you may have come across a useful thought.
+
+          ${loadMemoryCache()}
+
+          Here are some files that have been modified recently:
+          ${[...changedFiles].slice(-10).join("\n")}
+
+          You have the experience of a senior contractor software engineer.
+          Be concise for your written responses, do not include any tools.
+          Another follow up AI agent will read and write files to complete the task for you.
+        `,
       },
       ...historyToMessages(history),
     ],
