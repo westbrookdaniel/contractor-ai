@@ -1,4 +1,4 @@
-import { generateObject, streamObject, streamText } from "ai";
+import { generateObject, streamText } from "ai";
 import type { History, MessageHistory } from "../../types";
 import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
