@@ -11,7 +11,23 @@ import { readFilesInDir } from "../tools/readFilesInDir";
 export async function discuss(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
 
-  const result = streamText({
+  const summary = streamText({
+    model: model,
+    messages: [
+      {
+        role: "system",
+        content: `Very briefly respond. Keep it very short and do not use code. 200 words max.`,
+      },
+      ...historyToMessages(history),
+    ],
+    tools: { writeToFile, readFile, readFilesInDir },
+    maxSteps: 20,
+    toolChoice: "required",
+  });
+
+  await printStream(summary);
+
+  const actions = streamText({
     model: model,
     messages: [
       {
@@ -47,21 +63,26 @@ export async function discuss(history: History, changedFiles: Set<string>) {
     toolChoice: "required",
   });
 
-  await printStream(result);
+  await printStream(actions);
 
-  const response = await result.text;
-
-  if (response.trim() === "") {
-    // we need to exit otherise we can infinite loop very easily
-    printLine("Failed to respond", Color.Red);
-    process.exit(1);
-  }
+  const summaryText = await summary.text;
+  const actionsText = await actions.text; // this should be "" but just in case
+  const response = summaryText + actionsText;
 
   printLine();
 
-  history.push({
-    type: "message",
-    role: "assistant",
-    content: response,
-  });
+  if (response.trim() === "") {
+    history.push({
+      type: "message",
+      role: "assistant",
+      content:
+        "<thought>I completed the task but there was was no further communication required</thought>",
+    });
+  } else {
+    history.push({
+      type: "message",
+      role: "assistant",
+      content: response,
+    });
+  }
 }

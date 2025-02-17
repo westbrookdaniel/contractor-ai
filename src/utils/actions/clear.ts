@@ -1,12 +1,12 @@
 import fs from "fs";
 import type { History } from "../../types";
-import { HISTORY_FILE, MEMORY_FILE } from "../cache";
+import { HISTORY_FILE, MEMORY_FILE, REPO_FILE } from "../cache";
 import { clearConsole, Color, formatPrompt, printLine } from "../io";
 import { pickValues } from "./pickValues";
 
 async function pickClearingMethods(maxLines = 7) {
   const selected = await pickValues(
-    ["History", "Memory", "Console"],
+    ["History", "Memory", "Repository Cache", "Console"],
     (n) => "Clear " + n,
     maxLines,
   );
@@ -24,6 +24,9 @@ export async function clear(history: History) {
   }
   if (selected.includes("Memory")) {
     fs.existsSync(MEMORY_FILE) && fs.rmSync(MEMORY_FILE);
+  }
+  if (selected.includes("Repository Cache")) {
+    fs.existsSync(REPO_FILE) && fs.rmSync(REPO_FILE);
   }
   if (selected.includes("Console")) {
     clearConsole();
