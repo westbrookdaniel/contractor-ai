@@ -4,7 +4,6 @@ import path from "path";
 import { z } from "zod";
 import { GIT_ROOT } from "../files";
 import { safelyNormalizePath } from "../safety";
-import { processFile } from "../repo";
 
 export const writeToFile = tool({
   description: "Write text content to a file",
@@ -28,9 +27,6 @@ export const writeToFile = tool({
       }
 
       await fs.promises.writeFile(fileName, content, { flag: "w" });
-
-      // dont await, happen in the background
-      void processFile(fileName);
 
       return {
         success: true,
