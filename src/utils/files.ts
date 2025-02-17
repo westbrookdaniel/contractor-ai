@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import path from "path";
-import { pickValues } from "./actions/pickValues";
+import { pickValues } from "./pickValues";
 import { Color, printLine } from "./io";
 
 export function findGitRoot(initialPath: string): string {

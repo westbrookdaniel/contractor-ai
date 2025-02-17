@@ -1,4 +1,4 @@
-import { clearLines, Color, printLine } from "../io";
+import { clearLines, Color, printLine } from "./io";
 import readline from "readline";
 
 export async function pickValues(

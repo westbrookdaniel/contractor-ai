@@ -2,7 +2,7 @@ import fs from "fs";
 import type { History } from "../../types";
 import { HISTORY_FILE, MEMORY_FILE, REPO_FILE } from "../cache";
 import { clearConsole, Color, formatPrompt, printLine } from "../io";
-import { pickValues } from "./pickValues";
+import { pickValues } from "../pickValues";
 
 async function pickClearingMethods(maxLines = 7) {
   const selected = await pickValues(
