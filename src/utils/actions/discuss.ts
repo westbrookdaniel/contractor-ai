@@ -1,4 +1,4 @@
-import { streamText } from "ai";
+import { generateObject, streamObject, streamText } from "ai";
 import type { History, MessageHistory } from "../../types";
 import { historyToMessages } from "../conversation";
 import { printLine, Color, printStream } from "../io";
@@ -7,6 +7,7 @@ import { loadMemoryCache } from "../cache";
 import { readFile } from "../tools/readFile";
 import { writeToFile } from "../tools/writeToFile";
 import { readFilesInDir } from "../tools/readFilesInDir";
+import { z } from "zod";
 
 export async function discuss(history: History, changedFiles: Set<string>) {
   printLine("\n* Contractor:", Color.Blue);
@@ -16,10 +17,25 @@ export async function discuss(history: History, changedFiles: Set<string>) {
     messages: [
       {
         role: "system",
-        content: `Very briefly respond. Keep it very short and do not use code. 200 words max.`,
+        content: `You are a summariser agent in a pipeline. Summarise how the next agent which can perform a number of tool usages
+        to interact with the codebase. Very briefly respond. Keep it very short and do not use code. 100 words max.`,
       },
       ...historyToMessages(history),
     ],
+  });
+
+  const estimation = generateObject({
+    model: model,
+    messages: [
+      {
+        role: "system",
+        content: `You are a tool usage estimation agent in a pipeline. Estimate how many tool usages the next ai agent
+        will require to complete their task. The tools they have are: writeToFile, readFile, readFilesInDir.
+        Choose a number between 0 and 30.`,
+      },
+      ...historyToMessages(history),
+    ],
+    schema: z.object({ maxSteps: z.number().min(0).max(20) }),
   });
 
   await printStream(summary);
@@ -29,6 +45,8 @@ export async function discuss(history: History, changedFiles: Set<string>) {
     role: "assistant",
     content: await summary.text,
   });
+
+  const maxStepsEstimate = (await estimation).object.maxSteps;
 
   const actions = streamText({
     model: model,
@@ -62,7 +80,7 @@ export async function discuss(history: History, changedFiles: Set<string>) {
       ...historyToMessages(history),
     ],
     tools: { writeToFile, readFile, readFilesInDir },
-    maxSteps: 20,
+    maxSteps: maxStepsEstimate,
     toolChoice: "required",
   });
 
